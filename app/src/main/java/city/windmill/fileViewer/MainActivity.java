@@ -27,9 +27,15 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(new FragmentStorageMgr(this));
     }
 
-    private void replaceFragment(Fragment fragment) {
+    public void replaceFragment(Fragment fragment) {
+        replaceFragment(fragment, false);
+    }
+
+    public void replaceFragment(Fragment fragment, boolean backStack) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (backStack)
+            transaction.addToBackStack(null);
         transaction.replace(R.id.MainActivity, fragment);
         transaction.commit();
     }

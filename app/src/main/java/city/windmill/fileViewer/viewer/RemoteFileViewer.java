@@ -1,9 +1,23 @@
 package city.windmill.fileViewer.viewer;
 
-import city.windmill.fileViewer.storage.IStorage;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import city.windmill.fileViewer.file.IFileData;
+import city.windmill.fileViewer.storage.RemoteStorage;
 
 public class RemoteFileViewer extends FileViewer {
-    public RemoteFileViewer(IStorage storage) {
+    private final RemoteStorage storage;
+
+    public RemoteFileViewer(RemoteStorage storage) {
         super(storage);
+        this.storage = storage;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void viewFileData(IFileData fileData) {
+        adapter.setFileDataList(storage.getFiles(fileData));
     }
 }

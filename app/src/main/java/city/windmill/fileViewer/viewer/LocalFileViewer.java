@@ -1,9 +1,33 @@
 package city.windmill.fileViewer.viewer;
 
-import city.windmill.fileViewer.storage.IStorage;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import com.blankj.utilcode.util.LogUtils;
+
+import java.io.IOException;
+
+import city.windmill.fileViewer.file.IFileData;
+import city.windmill.fileViewer.storage.LocalStorage;
 
 public class LocalFileViewer extends FileViewer {
-    public LocalFileViewer(IStorage storage) {
+    private final LocalStorage storage;
+
+    public LocalFileViewer(LocalStorage storage) {
         super(storage);
+        this.storage = storage;
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void viewFileData(IFileData fileData) {
+        try {
+            adapter.setFileDataList(storage.getFiles(fileData));
+        } catch (IOException e) {
+            LogUtils.e(e);
+        }
+    }
+
+
 }

@@ -66,6 +66,7 @@ public class LocalStorage implements IStorage {
         Files.walkFileTree(dirData.getPath(), new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                if (dir == dirData.getPath()) return FileVisitResult.CONTINUE;
                 fileData.add(new DirData(dirData, dir.getFileName()));
                 return FileVisitResult.SKIP_SUBTREE;
             }

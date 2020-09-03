@@ -3,4 +3,6 @@
     <string name="app_name">File Viewer</string>
     <string name="Remote">Remote</string>
     <string name="Local">Local</string>
+    <string name="Success_Storage">Granted Storage Permission</string>
+    <string name="Failed_Storage">Without Storage Permission</string>
 </resources>

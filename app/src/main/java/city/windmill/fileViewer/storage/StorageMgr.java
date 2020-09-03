@@ -81,7 +81,13 @@ public class StorageMgr {
         for (Path pathStorage : pathStorages) {
             LogUtils.d("Begin Load File:", pathStorage);
             BufferedReader reader = Files.newBufferedReader(pathStorage, StandardCharsets.UTF_8);
-            doLoadStorageData(reader);
+            try {
+                doLoadStorageData(reader);
+            } catch (Exception e) {
+                LogUtils.e(e);
+                Files.delete(pathStorage);
+                LogUtils.w("Deleted wrong file:", pathStorage);
+            }
         }
         //Check if local storage valid
         validLocals();

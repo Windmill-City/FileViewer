@@ -1,5 +1,6 @@
 package city.windmill.fileViewer.storage;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +15,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.constant.PermissionConstants;
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.PermissionUtils;
+import com.blankj.utilcode.util.SnackbarUtils;
 import com.blankj.utilcode.util.Utils;
 import com.windmill.FileViewer.R;
 
 import java.util.List;
+
+import city.windmill.fileViewer.MainActivity;
+import city.windmill.fileViewer.viewer.FileViewer;
+import city.windmill.fileViewer.viewer.LocalFileViewer;
+import city.windmill.fileViewer.viewer.RemoteFileViewer;
 
 public class FragmentStorage extends Fragment {
     private RecyclerView viewStorageItems;
@@ -48,8 +58,39 @@ public class FragmentStorage extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            IStorage storage = storages.get(position);
+            final IStorage storage = storages.get(position);
             holder.StorageName.setText(storage.getName());
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (PermissionUtils.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        FileViewer viewer = storage instanceof LocalStorage ? new LocalFileViewer((LocalStorage) storage) : new RemoteFileViewer((RemoteStorage) storage);
+                        ((MainActivity) getActivity()).replaceFragment(viewer, true);
+                        viewer.viewFileData(storage.getRoot());
+                    } else
+                        RequestStorage();
+                }
+            });
+        }
+
+        private void RequestStorage() {
+            PermissionUtils.permission(PermissionConstants.STORAGE).callback(new PermissionUtils.FullCallback() {
+                @Override
+                public void onGranted(List<String> permissionsGranted) {
+                    LogUtils.i("Granted Storage Permission");
+                    SnackbarUtils.with(getView())
+                            .setMessage(getString(R.string.Success_Storage))
+                            .showSuccess();
+                }
+
+                @Override
+                public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
+                    LogUtils.w("User denied Storage Permission Request");
+                    SnackbarUtils.with(getView())
+                            .setMessage(getString(R.string.Failed_Storage))
+                            .showWarning();
+                }
+            }).request();
         }
 
         @Override
@@ -58,6 +99,7 @@ public class FragmentStorage extends Fragment {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
+            View view;
             TextView StateText;
             ImageView State;
             TextView StorageName;
@@ -65,6 +107,7 @@ public class FragmentStorage extends Fragment {
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                view = itemView;
                 StorageName = itemView.findViewById(R.id.StorageName);
                 BtnWOL = itemView.findViewById(R.id.BtnWOL);
                 State = itemView.findViewById(R.id.State);
