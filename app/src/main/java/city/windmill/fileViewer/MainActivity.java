@@ -7,25 +7,20 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.windmill.FileViewer.R;
-
-import java.io.IOException;
-
-import city.windmill.fileViewer.storage.StorageMgr;
 
 import static com.blankj.utilcode.util.LogUtils.D;
 
 public class MainActivity extends AppCompatActivity {
-    public StorageMgr storageMgr;
+    public StorageMgrActivity storageMgrActivity;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         initLogConfig();
-
-        loadStorageData();
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        storageMgrActivity = new StorageMgrActivity(this);
+        storageMgrActivity.open();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -41,15 +36,5 @@ public class MainActivity extends AppCompatActivity {
         cfg.setSaveDays(7);
 
         LogUtils.i(cfg);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void loadStorageData() {
-        try {
-            storageMgr = new StorageMgr(getApplicationContext().getDataDir().toPath());
-            storageMgr.LoadStorage();
-        } catch (IOException e) {
-            LogUtils.e(e);
-        }
     }
 }

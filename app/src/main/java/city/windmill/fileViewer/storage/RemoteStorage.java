@@ -4,7 +4,6 @@ import android.os.Build;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
@@ -26,7 +25,7 @@ public class RemoteStorage extends LocalStorage {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public List<IFileData> getFiles(IFileData data) {
-        return data.getType() == FileType.DIR ? ((DirData)data).getFiles() : data.getParent().getFiles();
+        return data.getType() == FileType.DIR ? ((DirData) data).getFiles() : data.getParent().getFiles();
     }
 
     @Override
@@ -45,11 +44,14 @@ public class RemoteStorage extends LocalStorage {
     }
     //endregion
 
-    //region Object
-    @NonNull
     @Override
     public String toString() {
-        return String.format("RemoteStorage: Name:%s root:%s lastDirData:%s mac:%s", name, root, lastDir, mac);
+        return "RemoteStorage{" +
+                "mac=" + mac +
+                ", name='" + name + '\'' +
+                ", root=" + root +
+                ", lastDir=" + lastDir +
+                '}';
     }
 
     @Override
@@ -59,7 +61,7 @@ public class RemoteStorage extends LocalStorage {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        return obj == this || (obj instanceof RemoteStorage && ((RemoteStorage)obj).mac.equals(mac));
+        return obj == this || (obj instanceof RemoteStorage && ((RemoteStorage) obj).mac.equals(mac));
     }
 
     //endregion

@@ -4,7 +4,6 @@ import android.os.Build;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
@@ -99,11 +98,13 @@ public class LocalStorage implements IStorage {
     }
     //endregion
 
-    //region Object
-    @NonNull
     @Override
     public String toString() {
-        return String.format("LocalStorage: Name:%s root:%s lastDirData:%s", name, root, lastDir);
+        return "LocalStorage{" +
+                "name='" + name + '\'' +
+                ", root=" + root +
+                ", lastDir=" + lastDir +
+                '}';
     }
 
     @Override

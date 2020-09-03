@@ -22,8 +22,8 @@ public class LocalStorageDiscover {
         //path of /storage/emulated/0.
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
             localStorages.add(new LocalStorage("ExternalStorage", PathUtils.getExternalStoragePath()));
-        if (SDCardUtils.isSDCardEnableByEnvironment()){
-            for(SDCardUtils.SDCardInfo info : SDCardUtils.getSDCardInfo()){
+        if (SDCardUtils.isSDCardEnableByEnvironment()) {
+            for (SDCardUtils.SDCardInfo info : SDCardUtils.getSDCardInfo()) {
                 LogUtils.d("Found ExternalStorage:", info);
                 String sdcardID = Paths.get(info.getPath()).getFileName().toString();
                 localStorages.add(new LocalStorage("SDCard-" + sdcardID, info.getPath()));

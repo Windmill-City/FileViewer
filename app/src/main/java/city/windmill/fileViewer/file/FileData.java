@@ -5,7 +5,6 @@ import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
@@ -65,20 +64,28 @@ public class FileData implements IFileData {
     //endregion
 
     //region Object
-    @NonNull
+
     @Override
     public String toString() {
-        return String.format("FileData: Name:%s Path:%s Parent%s", name, path, parent);
+        return "FileData{" +
+                "parent=" + parent +
+                ", name=" + name +
+                ", path=" + path +
+                '}';
     }
 
     @Override
-    public final int hashCode() {
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileData fileData = (FileData) o;
+        return getPath().equals(fileData.getPath());
+    }
+
+    @Override
+    public int hashCode() {
         return getPath().hashCode();
     }
 
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        return obj == this || (obj instanceof DirData && ((DirData)obj).getPath().equals(getPath()));
-    }
     //endregion
 }

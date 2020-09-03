@@ -90,21 +90,27 @@ public class DirData implements IFileData {
     }
     //endregion
 
-    //region Object
-    @NonNull
     @Override
-    public String toString() {
-        return String.format("DirData: Name:%s Path:%s Parent:%s fileData:%s", name, path, parent, fileData);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DirData dirData = (DirData) o;
+        return getPath().equals(dirData.getPath());
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return getPath().hashCode();
     }
 
     @Override
-    public boolean equals(@Nullable Object obj) {
-        return obj == this || (obj instanceof DirData && ((DirData) obj).getPath().equals(getPath()));
+    public String toString() {
+        return "DirData{" +
+                "parent=" + parent +
+                ", fileData=" + fileData +
+                ", name=" + name +
+                ", path=" + path +
+                '}';
     }
     //endregion
 }
