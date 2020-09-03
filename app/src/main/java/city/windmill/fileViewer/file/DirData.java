@@ -88,4 +88,11 @@ public class DirData implements IFileData {
         jsonReader.endArray();
     }
     //endregion
+
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.format("DirData: Name%s Path:%s Parent:%s fileData:%s", name, path, parent, fileData);
+    }
 }

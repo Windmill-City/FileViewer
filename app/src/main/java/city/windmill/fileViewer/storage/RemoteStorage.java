@@ -4,6 +4,7 @@ import android.os.Build;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
@@ -43,4 +44,11 @@ public class RemoteStorage extends LocalStorage {
         mac = new MacAddress(jsonReader.nextString());
     }
     //endregion
+
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.format("RemoteStorage: Name:%s root:%s lastDirData:%s mac:%s", name, root, lastDir, mac);
+    }
 }

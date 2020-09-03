@@ -6,6 +6,8 @@ import android.util.JsonWriter;
 
 import androidx.annotation.RequiresApi;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,34 +29,43 @@ import city.windmill.fileViewer.utils.LocalStorageDiscover;
 public class StorageMgr {
     public static final String STORAGE_FILE_SUFFIX = ".storage.json";
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static final PathMatcher MATCHER_STORAGE_FILE = FileSystems.getDefault().getPathMatcher("glob:*" + STORAGE_FILE_SUFFIX);
+    public static final PathMatcher MATCHER_STORAGE_FILE = FileSystems.getDefault().getPathMatcher("glob:**" + STORAGE_FILE_SUFFIX);
 
     public final List<IStorage> storages = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void LoadStorage(Path path) throws IOException {
+    public void LoadStorage(final Path path) throws IOException {
+        LogUtils.d("Begin loading storage data from:", path);
         storages.clear();
         final List<Path> pathStorages = new ArrayList<>();
         Files.walkFileTree(path, new SimpleFileVisitor<Path>(){
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                LogUtils.v("Visited Dir:", dir);
+                if(dir.equals(path)) return FileVisitResult.CONTINUE;
                 return FileVisitResult.SKIP_SUBTREE;
             }
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                if(MATCHER_STORAGE_FILE.matches(file))
+                LogUtils.v("Visited file:", file);
+                if(MATCHER_STORAGE_FILE.matches(file)) {
                     pathStorages.add(file);
+                    LogUtils.v("Added storage file:", file);
+                }
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
             public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                LogUtils.w("Failed to visit file:", file);
                 return FileVisitResult.CONTINUE;
             }
         });
+        LogUtils.d("Founded Storage Files:", pathStorages);
 
         for(Path pathStorage : pathStorages){
+            LogUtils.d("Begin Load File:", pathStorage);
             BufferedReader reader = Files.newBufferedReader(pathStorage, StandardCharsets.UTF_8);
             doLoadStorageData(reader);
         }
@@ -62,6 +73,7 @@ public class StorageMgr {
         validLocals();
         //Save data
         SaveStorage(path);
+        LogUtils.d("Finally loaded storage:", storages);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -80,15 +92,18 @@ public class StorageMgr {
                 LocalStorage localStorage = enumDiscoveredLocals.next();
                 if (localStorage.getRoot().getPath().equals(storage.getRoot().getPath())) {
                     enumDiscoveredLocals.remove();//Remove exist storage
+                    LogUtils.d("Removed existing Storage:", localStorage);
                     continue NextStorage;
                 }
             }
             //Not exist in local storage, remove it
             enumStorage.remove();
+            LogUtils.w("Removed non exist local storage:", storage);
         }
 
         //Add not exist storage
         storages.addAll(discoveredLocals);
+        LogUtils.i("Added new LocalStorage:", discoveredLocals);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -104,6 +119,7 @@ public class StorageMgr {
         reader.endArray();
         reader.close();
         storages.add(storage);
+        LogUtils.d("Do loaded storage:", storage);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -112,8 +128,7 @@ public class StorageMgr {
             Path destPath = path.resolve(storage.getName().toLowerCase() + STORAGE_FILE_SUFFIX);
             BufferedWriter writer = Files.newBufferedWriter(destPath, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             doSaveStorageData(storage, writer);
-            writer.flush();
-            writer.close();
+            LogUtils.d("Saved storage data to:", destPath);
         }
     }
 
@@ -124,6 +139,8 @@ public class StorageMgr {
         writer.value(storage instanceof LocalStorage);
         storage.onSave(writer);
         writer.endArray();
+        writer.flush();
         writer.close();
+        LogUtils.d("Do saved storage:", storage);
     }
 }

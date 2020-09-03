@@ -62,4 +62,11 @@ public class FileData implements IFileData {
         path = parent.getPath().resolve(name);
     }
     //endregion
+
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.format("FileData: Name%s Path:%s Parent%s", name, path, parent);
+    }
 }
