@@ -28,12 +28,18 @@ public class LocalStorage implements IStorage {
     public DirData root;
     public DirData lastDir;
 
-    public LocalStorage(){}
+    public LocalStorage() {
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public LocalStorage(String name, Path root){
+    public LocalStorage(String name, Path root) {
         this.name = name;
         this.root = new DirData(null, root);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public LocalStorage(String name, String root) {
+        this(name, Paths.get(root));
     }
 
     //region IStorage
@@ -93,10 +99,22 @@ public class LocalStorage implements IStorage {
     }
     //endregion
 
-
+    //region Object
     @NonNull
     @Override
     public String toString() {
         return String.format("LocalStorage: Name:%s root:%s lastDirData:%s", name, root, lastDir);
     }
+
+    @Override
+    public int hashCode() {
+        return root.hashCode();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return obj == this || (obj instanceof LocalStorage && ((LocalStorage) obj).getRoot().equals(getRoot()));
+    }
+
+    //endregion
 }

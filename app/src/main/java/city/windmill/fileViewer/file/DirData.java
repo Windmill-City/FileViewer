@@ -15,16 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DirData implements IFileData {
-    public Path name;
-    public Path path;
     @Nullable
     public final DirData parent;
     public final List<IFileData> fileData = new ArrayList<>();
+    public Path name;
+    public Path path;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public DirData(@Nullable DirData parent, Path name) {
         this.parent = parent;
-        this.name = name;
+        //when parent is null, consider name is the path
+        this.name = parent != null ? name : name.getFileName();
         path = parent != null ? parent.getPath().resolve(name) : name;
     }
 
@@ -89,10 +90,21 @@ public class DirData implements IFileData {
     }
     //endregion
 
-
+    //region Object
     @NonNull
     @Override
     public String toString() {
-        return String.format("DirData: Name%s Path:%s Parent:%s fileData:%s", name, path, parent, fileData);
+        return String.format("DirData: Name:%s Path:%s Parent:%s fileData:%s", name, path, parent, fileData);
     }
+
+    @Override
+    public final int hashCode() {
+        return getPath().hashCode();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return obj == this || (obj instanceof DirData && ((DirData) obj).getPath().equals(getPath()));
+    }
+    //endregion
 }

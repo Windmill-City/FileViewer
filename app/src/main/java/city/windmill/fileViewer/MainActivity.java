@@ -16,7 +16,7 @@ import city.windmill.fileViewer.storage.StorageMgr;
 import static com.blankj.utilcode.util.LogUtils.D;
 
 public class MainActivity extends AppCompatActivity {
-    public StorageMgr storageMgr = new StorageMgr();
+    public StorageMgr storageMgr;
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadStorageData() {
         try {
-            storageMgr.LoadStorage(getApplicationContext().getDataDir().toPath());
+            storageMgr = new StorageMgr(getApplicationContext().getDataDir().toPath());
+            storageMgr.LoadStorage();
         } catch (IOException e) {
             LogUtils.e(e);
         }

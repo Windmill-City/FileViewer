@@ -5,6 +5,7 @@ import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
@@ -16,7 +17,6 @@ import city.windmill.fileViewer.file.IFileData;
 import city.windmill.fileViewer.utils.MacAddress;
 
 public class RemoteStorage extends LocalStorage {
-    public boolean isConnected;
     protected MacAddress mac;
 
     public void Connect() {
@@ -45,10 +45,22 @@ public class RemoteStorage extends LocalStorage {
     }
     //endregion
 
-
+    //region Object
     @NonNull
     @Override
     public String toString() {
         return String.format("RemoteStorage: Name:%s root:%s lastDirData:%s mac:%s", name, root, lastDir, mac);
     }
+
+    @Override
+    public int hashCode() {
+        return mac.hashCode();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return obj == this || (obj instanceof RemoteStorage && ((RemoteStorage)obj).mac.equals(mac));
+    }
+
+    //endregion
 }

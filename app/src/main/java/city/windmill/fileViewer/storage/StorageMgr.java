@@ -21,8 +21,10 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import city.windmill.fileViewer.utils.LocalStorageDiscover;
 
@@ -31,18 +33,23 @@ public class StorageMgr {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static final PathMatcher MATCHER_STORAGE_FILE = FileSystems.getDefault().getPathMatcher("glob:**" + STORAGE_FILE_SUFFIX);
 
-    public final List<IStorage> storages = new ArrayList<>();
+    public final Set<IStorage> storages = new HashSet<>();
+    public final Path savePath;
 
+    public StorageMgr(Path savePath) {
+        this.savePath = savePath;
+    }
+    //region Save/Load
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void LoadStorage(final Path path) throws IOException {
-        LogUtils.d("Begin loading storage data from:", path);
+    public void LoadStorage() throws IOException {
+        LogUtils.d("Begin loading storage data from:", savePath);
         storages.clear();
         final List<Path> pathStorages = new ArrayList<>();
-        Files.walkFileTree(path, new SimpleFileVisitor<Path>(){
+        Files.walkFileTree(savePath, new SimpleFileVisitor<Path>(){
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                 LogUtils.v("Visited Dir:", dir);
-                if(dir.equals(path)) return FileVisitResult.CONTINUE;
+                if(dir.equals(savePath)) return FileVisitResult.CONTINUE;
                 return FileVisitResult.SKIP_SUBTREE;
             }
 
@@ -72,38 +79,26 @@ public class StorageMgr {
         //Check if local storage valid
         validLocals();
         //Save data
-        SaveStorage(path);
+        SaveStorage();
         LogUtils.d("Finally loaded storage:", storages);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void validLocals(){
-        Iterator<IStorage> enumStorage = storages.iterator();
-        List<LocalStorage> discoveredLocals = LocalStorageDiscover.getLocalStorages();
+    private void validLocals() throws IOException {
+        Set<LocalStorage> discoveredLocals = LocalStorageDiscover.getLocalStorages();
+        Iterator<IStorage> enumStorages = storages.iterator();
+        while (enumStorages.hasNext()){
+            IStorage storage = enumStorages.next();
+            if(storage instanceof RemoteStorage) continue;//Skip Remote
 
-        NextStorage:
-        while (enumStorage.hasNext()){
-            IStorage storage = enumStorage.next();
-            if(storage instanceof RemoteStorage)
-                continue;//only check local storage
-
-            Iterator<LocalStorage> enumDiscoveredLocals = discoveredLocals.iterator();
-            while (enumDiscoveredLocals.hasNext()) {
-                LocalStorage localStorage = enumDiscoveredLocals.next();
-                if (localStorage.getRoot().getPath().equals(storage.getRoot().getPath())) {
-                    enumDiscoveredLocals.remove();//Remove exist storage
-                    LogUtils.d("Removed existing Storage:", localStorage);
-                    continue NextStorage;
-                }
+            if(!discoveredLocals.contains(storage)) {
+                enumStorages.remove();
+                LogUtils.w("Removed non exist storage:", storage);
+                delete(storage);
             }
-            //Not exist in local storage, remove it
-            enumStorage.remove();
-            LogUtils.w("Removed non exist local storage:", storage);
         }
-
-        //Add not exist storage
+        //Add non exist storage
         storages.addAll(discoveredLocals);
-        LogUtils.i("Added new LocalStorage:", discoveredLocals);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -123,9 +118,9 @@ public class StorageMgr {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void SaveStorage(Path path) throws IOException {
+    public void SaveStorage() throws IOException {
         for(IStorage storage : storages){
-            Path destPath = path.resolve(storage.getName().toLowerCase() + STORAGE_FILE_SUFFIX);
+            Path destPath = savePath.resolve(storage.getName().toLowerCase() + STORAGE_FILE_SUFFIX);
             BufferedWriter writer = Files.newBufferedWriter(destPath, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             doSaveStorageData(storage, writer);
             LogUtils.d("Saved storage data to:", destPath);
@@ -142,5 +137,13 @@ public class StorageMgr {
         writer.flush();
         writer.close();
         LogUtils.d("Do saved storage:", storage);
+    }
+    //endregion
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void delete(IStorage storage) throws IOException {
+        Path toDel = savePath.resolve(storage.getName().toLowerCase() + STORAGE_FILE_SUFFIX);
+        Files.delete(toDel);
+        LogUtils.i("Deleted storage:", toDel);
     }
 }

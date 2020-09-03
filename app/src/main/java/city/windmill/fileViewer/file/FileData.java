@@ -5,6 +5,7 @@ import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
@@ -12,10 +13,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileData implements IFileData {
-    public Path name;
-    public Path path;
     @NonNull
     public final DirData parent;
+    public Path name;
+    public Path path;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public FileData(DirData parent, Path name) {
@@ -63,10 +64,21 @@ public class FileData implements IFileData {
     }
     //endregion
 
-
+    //region Object
     @NonNull
     @Override
     public String toString() {
-        return String.format("FileData: Name%s Path:%s Parent%s", name, path, parent);
+        return String.format("FileData: Name:%s Path:%s Parent%s", name, path, parent);
     }
+
+    @Override
+    public final int hashCode() {
+        return getPath().hashCode();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return obj == this || (obj instanceof DirData && ((DirData)obj).getPath().equals(getPath()));
+    }
+    //endregion
 }
