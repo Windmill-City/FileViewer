@@ -17,8 +17,6 @@ import city.windmill.fileViewer.storage.FragmentStorageMgr;
 import static com.blankj.utilcode.util.LogUtils.D;
 
 public class MainActivity extends AppCompatActivity {
-    public FragmentStorageMgr fragmentStorageMgr;
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        replaceFragment(new FragmentStorageMgr());
+        replaceFragment(new FragmentStorageMgr(this));
     }
 
     private void replaceFragment(Fragment fragment) {
