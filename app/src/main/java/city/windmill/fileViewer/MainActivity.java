@@ -5,22 +5,35 @@ import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.windmill.FileViewer.R;
+
+import city.windmill.fileViewer.storage.FragmentStorageMgr;
 
 import static com.blankj.utilcode.util.LogUtils.D;
 
 public class MainActivity extends AppCompatActivity {
-    public StorageMgrActivity storageMgrActivity;
+    public FragmentStorageMgr fragmentStorageMgr;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         initLogConfig();
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        storageMgrActivity = new StorageMgrActivity(this);
-        storageMgrActivity.open();
+        replaceFragment(new FragmentStorageMgr());
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.MainActivity, fragment);
+        transaction.commit();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
