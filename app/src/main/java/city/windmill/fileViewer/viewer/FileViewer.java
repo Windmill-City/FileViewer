@@ -1,5 +1,6 @@
 package city.windmill.fileViewer.viewer;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +23,7 @@ import java.util.List;
 
 import city.windmill.fileViewer.file.DirData;
 import city.windmill.fileViewer.file.FileDataHolder;
+import city.windmill.fileViewer.file.FileType;
 import city.windmill.fileViewer.file.IFileData;
 import city.windmill.fileViewer.storage.IStorage;
 
@@ -66,7 +69,6 @@ public abstract class FileViewer extends Fragment {
         
         protected void setFileDataList(List<IFileData> fileDataList) {
             fileDataHolder = new FileDataHolder(fileDataList);
-            fileDataHolder.showHidden = true;
             notifyDataSetChanged();
         }
         
@@ -76,11 +78,13 @@ public abstract class FileViewer extends Fragment {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_filedataitem, parent, false);
             return new ViewHolder(view);
         }
-        
+    
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             holder.fileData = fileDataHolder.get(position);
             holder.FileName.setText(holder.fileData.getName().toString());
+            holder.FileIcon.setImageResource(holder.fileData.getType() == FileType.DIR ? R.drawable.ic_folder : R.drawable.ic_file);
             holder.view.setOnClickListener(v -> {
                 viewFileData(holder.fileData);
             });
