@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -27,11 +26,6 @@ import java.util.List;
 
 public class FragmentStorageMgr extends Fragment {
     public StorageMgr storageMgr;
-    private AppCompatActivity activity;
-
-    public FragmentStorageMgr(AppCompatActivity activity) {
-        this.activity = activity;
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
@@ -40,7 +34,7 @@ public class FragmentStorageMgr extends Fragment {
         loadStorageData();
         View view = inflater.inflate(R.layout.fragment_storagemgr, container, false);
         ViewPager2 pager2 = view.findViewById(R.id.ViewPage_Storage);
-        StoragePageAdapter adapter = new StoragePageAdapter(activity, storageMgr);
+        StoragePageAdapter adapter = new StoragePageAdapter(getActivity(), storageMgr);
         pager2.setAdapter(adapter);
         //Bind TabLayout and ViewPager2
         TabLayout tabLayout = view.findViewById(R.id.SideNav);

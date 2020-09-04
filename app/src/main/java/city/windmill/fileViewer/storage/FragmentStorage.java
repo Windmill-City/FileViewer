@@ -33,6 +33,9 @@ public class FragmentStorage extends Fragment {
     private RecyclerView viewStorageItems;
     private List<IStorage> storages;
 
+    public FragmentStorage() {
+    }
+
     public FragmentStorage(List<IStorage> storages) {
         this.storages = storages;
     }
@@ -68,12 +71,12 @@ public class FragmentStorage extends Fragment {
                         ((MainActivity) getActivity()).replaceFragment(viewer, true);
                         viewer.viewFileData(storage.getRoot());
                     } else
-                        RequestStorage();
+                        RequestStoragePermission();
                 }
             });
         }
 
-        private void RequestStorage() {
+        private void RequestStoragePermission() {
             PermissionUtils.permission(PermissionConstants.STORAGE).callback(new PermissionUtils.FullCallback() {
                 @Override
                 public void onGranted(List<String> permissionsGranted) {

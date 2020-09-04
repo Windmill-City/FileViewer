@@ -1,6 +1,7 @@
 package city.windmill.fileViewer.viewer;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.Utils;
 import com.windmill.FileViewer.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import city.windmill.fileViewer.file.DirData;
+import city.windmill.fileViewer.file.FileDataHolder;
 import city.windmill.fileViewer.file.IFileData;
 import city.windmill.fileViewer.storage.IStorage;
 
@@ -28,8 +29,10 @@ public abstract class FileViewer extends Fragment {
     protected DirData curDir;
     protected RecyclerView files;
     protected FileDataItemAdapter adapter = new FileDataItemAdapter();
+    protected IStorage storage;
 
     public FileViewer(IStorage storage) {
+        this.storage = storage;
         curDir = storage.getLastDir();
     }
 
@@ -43,13 +46,31 @@ public abstract class FileViewer extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_BACK && curDir != null && curDir.getParent() != null) {
+                    viewFileData(curDir.getParent());
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
     public abstract void viewFileData(IFileData fileData);
 
     class FileDataItemAdapter extends RecyclerView.Adapter<FileDataItemAdapter.ViewHolder> {
-        private List<IFileData> fileDataList = new ArrayList<>();
+        private FileDataHolder fileDataHolder;
 
         public void setFileDataList(List<IFileData> fileDataList) {
-            this.fileDataList = fileDataList;
+            fileDataHolder = new FileDataHolder(fileDataList);
+            fileDataHolder.showHidden = true;
             notifyDataSetChanged();
         }
 
@@ -61,21 +82,26 @@ public abstract class FileViewer extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.FileName.setText(fileDataList.get(position).getName().toString());
+        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+            holder.fileData = fileDataHolder.get(position);
+            holder.FileName.setText(holder.fileData.getName().toString());
+            holder.view.setOnClickListener(v -> viewFileData(holder.fileData));
         }
 
         @Override
         public int getItemCount() {
-            return fileDataList.size();
+            return fileDataHolder.getDataSize();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
+            View view;
             TextView FileName;
             ImageView FileIcon;
+            IFileData fileData;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                view = itemView;
                 FileName = itemView.findViewById(R.id.FileName);
                 FileIcon = itemView.findViewById(R.id.FileIcon);
             }

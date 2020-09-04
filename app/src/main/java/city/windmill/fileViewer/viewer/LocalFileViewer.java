@@ -8,6 +8,8 @@ import com.blankj.utilcode.util.LogUtils;
 
 import java.io.IOException;
 
+import city.windmill.fileViewer.file.DirData;
+import city.windmill.fileViewer.file.FileType;
 import city.windmill.fileViewer.file.IFileData;
 import city.windmill.fileViewer.storage.LocalStorage;
 
@@ -24,6 +26,7 @@ public class LocalFileViewer extends FileViewer {
     public void viewFileData(IFileData fileData) {
         try {
             adapter.setFileDataList(storage.getFiles(fileData));
+            curDir = fileData.getType() == FileType.DIR ? (DirData) fileData : fileData.getParent();
         } catch (IOException e) {
             LogUtils.e(e);
         }

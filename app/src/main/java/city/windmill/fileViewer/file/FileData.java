@@ -7,21 +7,33 @@ import android.util.JsonWriter;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 
 public class FileData implements IFileData {
-    @NonNull
     public final DirData parent;
     public Path name;
     public Path path;
+    public FileTime timeStamp;
+    public boolean isHidden;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public FileData(DirData parent, Path name) {
         this.parent = parent;
         this.name = name;
-        path = parent.getPath().resolve(name);
+        //Consider name as path when parent null
+        path = parent != null ? parent.getPath().resolve(name) : name;
+        try {
+            timeStamp = Files.getLastModifiedTime(path);
+            isHidden = Files.isHidden(path);
+        } catch (IOException e) {
+            LogUtils.e(e);
+        }
     }
 
     public FileData(@NonNull DirData parent) {
@@ -39,7 +51,16 @@ public class FileData implements IFileData {
         return path;
     }
 
-    @NonNull
+    @Override
+    public FileTime getTimeStamp() {
+        return timeStamp;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return isHidden;
+    }
+
     @Override
     public DirData getParent() {
         return parent;
@@ -64,13 +85,15 @@ public class FileData implements IFileData {
     //endregion
 
     //region Object
-
+    @NonNull
     @Override
     public String toString() {
         return "FileData{" +
                 "parent=" + parent +
                 ", name=" + name +
                 ", path=" + path +
+                ", timeStamp=" + timeStamp +
+                ", isHidden=" + isHidden +
                 '}';
     }
 

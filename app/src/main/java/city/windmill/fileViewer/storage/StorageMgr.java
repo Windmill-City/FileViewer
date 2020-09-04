@@ -49,7 +49,7 @@ public class StorageMgr {
     //region Save/Load
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void LoadStorage() throws IOException {
-        LogUtils.d("Begin loading storage data from:", savePath);
+        LogUtils.i("Begin loading storage data from:", savePath);
         storages.clear();
         final List<Path> pathStorages = new ArrayList<>();
         Files.walkFileTree(savePath, new SimpleFileVisitor<Path>() {
@@ -76,7 +76,7 @@ public class StorageMgr {
                 return FileVisitResult.CONTINUE;
             }
         });
-        LogUtils.d("Founded Storage Files:", pathStorages);
+        LogUtils.i("Founded Storage Files:", pathStorages);
 
         for (Path pathStorage : pathStorages) {
             LogUtils.d("Begin Load File:", pathStorage);
@@ -93,7 +93,7 @@ public class StorageMgr {
         validLocals();
         //Save data
         SaveStorage();
-        LogUtils.d("Finally loaded storage:", storages);
+        LogUtils.i("Finally loaded storage:", storages);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -136,7 +136,7 @@ public class StorageMgr {
             Path destPath = savePath.resolve(storage.getName().toLowerCase() + STORAGE_FILE_SUFFIX);
             BufferedWriter writer = Files.newBufferedWriter(destPath, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             doSaveStorageData(storage, writer);
-            LogUtils.d("Saved storage data to:", destPath);
+            LogUtils.i("Saved storage data to:", destPath);
         }
     }
 

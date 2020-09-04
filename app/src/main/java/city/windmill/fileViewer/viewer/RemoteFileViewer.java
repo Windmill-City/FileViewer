@@ -4,6 +4,8 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import city.windmill.fileViewer.file.DirData;
+import city.windmill.fileViewer.file.FileType;
 import city.windmill.fileViewer.file.IFileData;
 import city.windmill.fileViewer.storage.RemoteStorage;
 
@@ -19,5 +21,6 @@ public class RemoteFileViewer extends FileViewer {
     @Override
     public void viewFileData(IFileData fileData) {
         adapter.setFileDataList(storage.getFiles(fileData));
+        curDir = fileData.getType() == FileType.DIR ? (DirData) fileData : fileData.getParent();
     }
 }

@@ -10,11 +10,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.PathUtils;
 import com.windmill.FileViewer.R;
 
 import city.windmill.fileViewer.storage.FragmentStorageMgr;
 
 import static com.blankj.utilcode.util.LogUtils.D;
+import static com.blankj.utilcode.util.LogUtils.I;
 
 public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -24,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        replaceFragment(new FragmentStorageMgr(this));
+        replaceFragment(new FragmentStorageMgr());
     }
 
     public void replaceFragment(Fragment fragment) {
@@ -46,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
         //console
         cfg.setConsoleFilter(D);
         //log2file
+        cfg.setDir(PathUtils.getInternalAppCachePath() + "/logs");
         cfg.setLog2FileSwitch(true);
-        cfg.setFileFilter(D);
+        cfg.setFileFilter(I);
         cfg.setFileExtension(".log");
         cfg.setFilePrefix("FileViewer-Log");
         cfg.setSaveDays(7);
