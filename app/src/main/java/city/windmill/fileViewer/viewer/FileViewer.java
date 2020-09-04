@@ -81,7 +81,9 @@ public abstract class FileViewer extends Fragment {
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             holder.fileData = fileDataHolder.get(position);
             holder.FileName.setText(holder.fileData.getName().toString());
-            holder.view.setOnClickListener(v -> viewFileData(holder.fileData));
+            holder.view.setOnClickListener(v -> {
+                viewFileData(holder.fileData);
+            });
         }
         
         @Override

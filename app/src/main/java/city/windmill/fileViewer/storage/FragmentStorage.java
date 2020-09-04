@@ -1,6 +1,7 @@
 package city.windmill.fileViewer.storage;
 
 import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,7 +56,8 @@ public class FragmentStorage extends Fragment {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_storageitem, parent, false);
             return new ViewHolder(view);
         }
-        
+    
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final IStorage storage = storages.get(position);
