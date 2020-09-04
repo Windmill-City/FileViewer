@@ -14,9 +14,6 @@ import city.windmill.fileViewer.storage.RemoteStorage;
 public class RemoteFileViewer extends FileViewer {
     private RemoteStorage storage;
 
-    public RemoteFileViewer() {
-    }
-
     public RemoteFileViewer(RemoteStorage storage) {
         super(storage);
         this.storage = storage;

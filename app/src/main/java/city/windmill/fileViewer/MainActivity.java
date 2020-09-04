@@ -13,26 +13,42 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.PathUtils;
 import com.windmill.FileViewer.R;
 
+import java.io.IOException;
+
 import city.windmill.fileViewer.storage.FragmentStorageMgr;
+import city.windmill.fileViewer.storage.StorageMgr;
 
 import static com.blankj.utilcode.util.LogUtils.D;
 import static com.blankj.utilcode.util.LogUtils.I;
 
 public class MainActivity extends AppCompatActivity {
+    public StorageMgr storageMgr;
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         initLogConfig();
+        loadStorageData();
+    
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        replaceFragment(new FragmentStorageMgr());
+    
+        replaceFragment(new FragmentStorageMgr(storageMgr));
     }
-
+    
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void loadStorageData() {
+        try {
+            storageMgr = new StorageMgr(PathUtils.getInternalAppDataPath());
+            storageMgr.LoadStorage();
+        } catch (IOException e) {
+            LogUtils.e(e);
+        }
+    }
+    
     public void replaceFragment(Fragment fragment) {
         replaceFragment(fragment, false);
     }
-
+    
     public void replaceFragment(Fragment fragment, boolean backStack) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();

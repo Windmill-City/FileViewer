@@ -31,9 +31,6 @@ public abstract class FileViewer extends Fragment {
     protected FileDataItemAdapter adapter = new FileDataItemAdapter();
     protected IStorage storage;
 
-    public FileViewer() {
-    }
-
     public FileViewer(IStorage storage) {
         this.storage = storage;
         curDir = storage.getLastDir();
@@ -54,15 +51,12 @@ public abstract class FileViewer extends Fragment {
         super.onResume();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_BACK && curDir != null && curDir.getParent() != null) {
-                    viewFileData(curDir.getParent());
-                    return true;
-                }
-                return false;
+        getView().setOnKeyListener((view, i, keyEvent) -> {
+            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_BACK && curDir != null && curDir.getParent() != null) {
+                viewFileData(curDir.getParent());
+                return true;
             }
+            return false;
         });
     }
 

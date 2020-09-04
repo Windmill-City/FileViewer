@@ -30,11 +30,7 @@ import city.windmill.fileViewer.viewer.LocalFileViewer;
 import city.windmill.fileViewer.viewer.RemoteFileViewer;
 
 public class FragmentStorage extends Fragment {
-    private RecyclerView viewStorageItems;
     private List<IStorage> storages;
-
-    public FragmentStorage() {
-    }
 
     public FragmentStorage(List<IStorage> storages) {
         this.storages = storages;
@@ -44,7 +40,7 @@ public class FragmentStorage extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_storage, container, false);
-        viewStorageItems = view.findViewById(R.id.View_StorageItems);
+        RecyclerView viewStorageItems = view.findViewById(R.id.View_StorageItems);
         viewStorageItems.setLayoutManager(new LinearLayoutManager(Utils.getApp().getApplicationContext()));
         viewStorageItems.setAdapter(new StorageItemAdapter());
         return view;

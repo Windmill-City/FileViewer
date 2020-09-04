@@ -16,9 +16,6 @@ import city.windmill.fileViewer.storage.LocalStorage;
 public class LocalFileViewer extends FileViewer {
     private LocalStorage storage;
 
-    public LocalFileViewer() {
-    }
-
     public LocalFileViewer(LocalStorage storage) {
         super(storage);
         this.storage = storage;

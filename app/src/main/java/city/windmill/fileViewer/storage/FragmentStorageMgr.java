@@ -14,24 +14,24 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.PathUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.windmill.FileViewer.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentStorageMgr extends Fragment {
     public StorageMgr storageMgr;
-
+    
+    public FragmentStorageMgr(StorageMgr storageMgr) {
+        this.storageMgr = storageMgr;
+    }
+    
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        loadStorageData();
         View view = inflater.inflate(R.layout.fragment_storagemgr, container, false);
         ViewPager2 pager2 = view.findViewById(R.id.ViewPage_Storage);
         StoragePageAdapter adapter = new StoragePageAdapter(getActivity(), storageMgr);
@@ -51,21 +51,10 @@ public class FragmentStorageMgr extends Fragment {
         tabLayoutMediator.attach();
         return view;
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void loadStorageData() {
-        try {
-            storageMgr = new StorageMgr(PathUtils.getInternalAppDataPath());
-            storageMgr.LoadStorage();
-        } catch (IOException e) {
-            LogUtils.e(e);
-        }
-    }
-
-    static class StoragePageAdapter extends FragmentStateAdapter {
-        private FragmentStorage fRemote;
-        private FragmentStorage fLocal;
-
+    
+    private static class StoragePageAdapter extends FragmentStateAdapter {
+        private FragmentStorage[] fStorages;
+        
         public StoragePageAdapter(@NonNull FragmentActivity fragmentActivity, StorageMgr storageMgr) {
             super(fragmentActivity);
             List<IStorage> remote_storages = new ArrayList<>();
@@ -76,25 +65,19 @@ public class FragmentStorageMgr extends Fragment {
                 else
                     local_storages.add(storage);
             }
-            fRemote = new FragmentStorage(remote_storages);
-            fLocal = new FragmentStorage(local_storages);
+            fStorages = new FragmentStorage[]{new FragmentStorage(remote_storages),
+                                              new FragmentStorage(local_storages)};
         }
-
+        
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            switch (position) {
-                case 0:
-                    return fRemote;
-                case 1:
-                    return fLocal;
-            }
-            return null;
+            return fStorages[position];
         }
-
+        
         @Override
         public int getItemCount() {
-            return 2;
+            return fStorages.length;
         }
     }
 }
