@@ -90,6 +90,10 @@ public abstract class FileViewer extends Fragment {
 
         @Override
         public int getItemCount() {
+            if (fileDataHolder.getDataSize() == 0)
+                getView().findViewById(R.id.EmptyFolder).setVisibility(View.VISIBLE);
+            else
+                getView().findViewById(R.id.EmptyFolder).setVisibility(View.INVISIBLE);
             return fileDataHolder.getDataSize();
         }
 

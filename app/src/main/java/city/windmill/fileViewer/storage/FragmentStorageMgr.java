@@ -38,18 +38,14 @@ public class FragmentStorageMgr extends Fragment {
         pager2.setAdapter(adapter);
         //Bind TabLayout and ViewPager2
         TabLayout tabLayout = view.findViewById(R.id.SideNav);
-        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, pager2, new TabLayoutMediator.TabConfigurationStrategy() {
-
-            @Override
-            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                switch (position) {
-                    case 0:
-                        tab.setText(R.string.Remote);
-                        break;
-                    case 1:
-                        tab.setText(R.string.Local);
-                        break;
-                }
+        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, pager2, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText(R.string.Remote);
+                    break;
+                case 1:
+                    tab.setText(R.string.Local);
+                    break;
             }
         });
         tabLayoutMediator.attach();

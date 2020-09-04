@@ -24,9 +24,11 @@ public class LocalFileViewer extends FileViewer {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void viewFileData(IFileData fileData) {
+        LogUtils.i("View FileData:", fileData);
         try {
             adapter.setFileDataList(storage.getFiles(fileData));
             curDir = fileData.getType() == FileType.DIR ? (DirData) fileData : fileData.getParent();
+            storage.lastDir = curDir;
         } catch (IOException e) {
             LogUtils.e(e);
         }

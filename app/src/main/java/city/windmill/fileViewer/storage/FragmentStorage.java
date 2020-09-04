@@ -63,16 +63,13 @@ public class FragmentStorage extends Fragment {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final IStorage storage = storages.get(position);
             holder.StorageName.setText(storage.getName());
-            holder.view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (PermissionUtils.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                        FileViewer viewer = storage instanceof LocalStorage ? new LocalFileViewer((LocalStorage) storage) : new RemoteFileViewer((RemoteStorage) storage);
-                        ((MainActivity) getActivity()).replaceFragment(viewer, true);
-                        viewer.viewFileData(storage.getRoot());
-                    } else
-                        RequestStoragePermission();
-                }
+            holder.view.setOnClickListener(v -> {
+                if (PermissionUtils.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    FileViewer viewer = storage instanceof LocalStorage ? new LocalFileViewer((LocalStorage) storage) : new RemoteFileViewer((RemoteStorage) storage);
+                    ((MainActivity) getActivity()).replaceFragment(viewer, true);
+                    viewer.viewFileData(storage.getRoot());
+                } else
+                    RequestStoragePermission();
             });
         }
 
@@ -98,6 +95,10 @@ public class FragmentStorage extends Fragment {
 
         @Override
         public int getItemCount() {
+            if (storages.isEmpty())
+                getView().findViewById(R.id.EmptyStorage).setVisibility(View.VISIBLE);
+            else
+                getView().findViewById(R.id.EmptyStorage).setVisibility(View.INVISIBLE);
             return storages.size();
         }
 

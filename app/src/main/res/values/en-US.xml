@@ -5,4 +5,6 @@
     <string name="Local">Local</string>
     <string name="Success_Storage">Granted Storage Permission</string>
     <string name="Failed_Storage">Without Storage Permission</string>
+    <string name="no_storage_found">No Storage Found</string>
+    <string name="empty_folder">Empty Folder</string>
 </resources>
