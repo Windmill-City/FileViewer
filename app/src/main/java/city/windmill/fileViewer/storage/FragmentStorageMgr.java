@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentStorageMgr extends Fragment {
-    public StorageMgr storageMgr;
+    private StorageMgr storageMgr;
     
     public FragmentStorageMgr(StorageMgr storageMgr) {
         this.storageMgr = storageMgr;

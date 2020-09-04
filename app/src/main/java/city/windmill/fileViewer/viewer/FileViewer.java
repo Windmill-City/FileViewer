@@ -27,25 +27,24 @@ import city.windmill.fileViewer.storage.IStorage;
 public abstract class FileViewer extends Fragment {
     @Nullable
     protected DirData curDir;
-    protected RecyclerView files;
-    protected FileDataItemAdapter adapter = new FileDataItemAdapter();
     protected IStorage storage;
-
+    protected FileDataItemAdapter adapter = new FileDataItemAdapter();
+    
     public FileViewer(IStorage storage) {
         this.storage = storage;
         curDir = storage.getLastDir();
     }
-
+    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fileviewer, container, false);
-        files = view.findViewById(R.id.View_Files);
+        RecyclerView files = view.findViewById(R.id.View_Files);
         files.setLayoutManager(new LinearLayoutManager(Utils.getApp().getApplicationContext()));
         files.setAdapter(adapter);
         return view;
     }
-
+    
     @Override
     public void onResume() {
         super.onResume();
@@ -59,32 +58,32 @@ public abstract class FileViewer extends Fragment {
             return false;
         });
     }
-
+    
     public abstract void viewFileData(IFileData fileData);
-
-    class FileDataItemAdapter extends RecyclerView.Adapter<FileDataItemAdapter.ViewHolder> {
+    
+    protected class FileDataItemAdapter extends RecyclerView.Adapter<FileDataItemAdapter.ViewHolder> {
         private FileDataHolder fileDataHolder;
-
-        public void setFileDataList(List<IFileData> fileDataList) {
+        
+        protected void setFileDataList(List<IFileData> fileDataList) {
             fileDataHolder = new FileDataHolder(fileDataList);
             fileDataHolder.showHidden = true;
             notifyDataSetChanged();
         }
-
+        
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_filedataitem, parent, false);
             return new ViewHolder(view);
         }
-
+        
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             holder.fileData = fileDataHolder.get(position);
             holder.FileName.setText(holder.fileData.getName().toString());
             holder.view.setOnClickListener(v -> viewFileData(holder.fileData));
         }
-
+        
         @Override
         public int getItemCount() {
             if (fileDataHolder.getDataSize() == 0)
@@ -93,14 +92,14 @@ public abstract class FileViewer extends Fragment {
                 getView().findViewById(R.id.EmptyFolder).setVisibility(View.INVISIBLE);
             return fileDataHolder.getDataSize();
         }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
+        
+        protected class ViewHolder extends RecyclerView.ViewHolder {
             View view;
             TextView FileName;
             ImageView FileIcon;
             IFileData fileData;
-
-            public ViewHolder(@NonNull View itemView) {
+            
+            protected ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 view = itemView;
                 FileName = itemView.findViewById(R.id.FileName);

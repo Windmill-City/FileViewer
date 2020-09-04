@@ -35,7 +35,7 @@ public class FragmentStorage extends Fragment {
     public FragmentStorage(List<IStorage> storages) {
         this.storages = storages;
     }
-
+    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,16 +45,16 @@ public class FragmentStorage extends Fragment {
         viewStorageItems.setAdapter(new StorageItemAdapter());
         return view;
     }
-
-    class StorageItemAdapter extends RecyclerView.Adapter<StorageItemAdapter.ViewHolder> {
-
+    
+    public class StorageItemAdapter extends RecyclerView.Adapter<StorageItemAdapter.ViewHolder> {
+        
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_storageitem, parent, false);
             return new ViewHolder(view);
         }
-
+        
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final IStorage storage = storages.get(position);
@@ -88,7 +88,7 @@ public class FragmentStorage extends Fragment {
                 }
             }).request();
         }
-
+        
         @Override
         public int getItemCount() {
             if (storages.isEmpty())
@@ -97,14 +97,14 @@ public class FragmentStorage extends Fragment {
                 getView().findViewById(R.id.EmptyStorage).setVisibility(View.INVISIBLE);
             return storages.size();
         }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
+        
+        public class ViewHolder extends RecyclerView.ViewHolder {
             View view;
             TextView StateText;
             ImageView State;
             TextView StorageName;
             Button BtnWOL;
-
+            
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 view = itemView;
