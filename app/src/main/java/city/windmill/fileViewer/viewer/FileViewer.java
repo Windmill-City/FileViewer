@@ -31,6 +31,9 @@ public abstract class FileViewer extends Fragment {
     protected FileDataItemAdapter adapter = new FileDataItemAdapter();
     protected IStorage storage;
 
+    public FileViewer() {
+    }
+
     public FileViewer(IStorage storage) {
         this.storage = storage;
         curDir = storage.getLastDir();
@@ -90,6 +93,7 @@ public abstract class FileViewer extends Fragment {
 
         @Override
         public int getItemCount() {
+            if (fileDataHolder == null) return 0;
             if (fileDataHolder.getDataSize() == 0)
                 getView().findViewById(R.id.EmptyFolder).setVisibility(View.VISIBLE);
             else

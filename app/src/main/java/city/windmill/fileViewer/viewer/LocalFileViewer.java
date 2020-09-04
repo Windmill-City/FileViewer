@@ -14,7 +14,10 @@ import city.windmill.fileViewer.file.IFileData;
 import city.windmill.fileViewer.storage.LocalStorage;
 
 public class LocalFileViewer extends FileViewer {
-    private final LocalStorage storage;
+    private LocalStorage storage;
+
+    public LocalFileViewer() {
+    }
 
     public LocalFileViewer(LocalStorage storage) {
         super(storage);
@@ -24,7 +27,7 @@ public class LocalFileViewer extends FileViewer {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void viewFileData(IFileData fileData) {
-        LogUtils.i("View FileData:", fileData);
+        LogUtils.d("View FileData:", fileData);
         try {
             adapter.setFileDataList(storage.getFiles(fileData));
             curDir = fileData.getType() == FileType.DIR ? (DirData) fileData : fileData.getParent();

@@ -95,6 +95,7 @@ public class FragmentStorage extends Fragment {
 
         @Override
         public int getItemCount() {
+            if (storages == null) return 0;
             if (storages.isEmpty())
                 getView().findViewById(R.id.EmptyStorage).setVisibility(View.VISIBLE);
             else

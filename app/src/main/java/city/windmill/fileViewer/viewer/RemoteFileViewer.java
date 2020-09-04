@@ -12,7 +12,10 @@ import city.windmill.fileViewer.file.IFileData;
 import city.windmill.fileViewer.storage.RemoteStorage;
 
 public class RemoteFileViewer extends FileViewer {
-    private final RemoteStorage storage;
+    private RemoteStorage storage;
+
+    public RemoteFileViewer() {
+    }
 
     public RemoteFileViewer(RemoteStorage storage) {
         super(storage);
@@ -22,7 +25,7 @@ public class RemoteFileViewer extends FileViewer {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void viewFileData(IFileData fileData) {
-        LogUtils.i("View FileData:", fileData);
+        LogUtils.d("View FileData:", fileData);
         adapter.setFileDataList(storage.getFiles(fileData));
         curDir = fileData.getType() == FileType.DIR ? (DirData) fileData : fileData.getParent();
         storage.lastDir = curDir;
