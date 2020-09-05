@@ -85,6 +85,8 @@ public abstract class FileViewer extends Fragment {
             holder.fileData = fileDataHolder.get(position);
             holder.FileName.setText(holder.fileData.getName().toString());
             holder.FileIcon.setImageResource(holder.fileData.getType() == FileType.DIR ? R.drawable.ic_folder : R.drawable.ic_file);
+            holder.FileTimeStamp.setText(holder.fileData.getTimeStamp().toString());
+            holder.FileSize.setText(String.format("%d", holder.fileData.getSize()));
             holder.view.setOnClickListener(v -> {
                 viewFileData(holder.fileData);
             });
@@ -98,18 +100,22 @@ public abstract class FileViewer extends Fragment {
                 getView().findViewById(R.id.EmptyFolder).setVisibility(View.INVISIBLE);
             return fileDataHolder.getDataSize();
         }
-        
+    
         protected class ViewHolder extends RecyclerView.ViewHolder {
             View view;
             TextView FileName;
             ImageView FileIcon;
+            TextView FileTimeStamp;
+            TextView FileSize;
             IFileData fileData;
-            
+        
             protected ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 view = itemView;
                 FileName = itemView.findViewById(R.id.FileName);
                 FileIcon = itemView.findViewById(R.id.FileIcon);
+                FileTimeStamp = itemView.findViewById(R.id.TimeStamp);
+                FileSize = itemView.findViewById(R.id.Size);
             }
         }
     }

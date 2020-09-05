@@ -24,17 +24,23 @@ public class DirData extends FileData {
     public DirData(@NonNull DirData parent) {
         super(parent);
     }
-
+    
     public List<IFileData> getFiles() {
         return fileData;
     }
-
+    
     //region IFileData
+    
+    @Override
+    public long getSize() {
+        return fileData.size();
+    }
+    
     @Override
     public FileType getType() {
         return FileType.DIR;
     }
-
+    
     @Override
     public void onSave(JsonWriter jsonWriter) throws IOException {
         jsonWriter.value(name.toString());

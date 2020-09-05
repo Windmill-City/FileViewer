@@ -45,22 +45,27 @@ public class FileData implements IFileData {
     public Path getName() {
         return name;
     }
-
+    
     @Override
     public Path getPath() {
         return path;
     }
-
+    
     @Override
     public FileTime getTimeStamp() {
         return timeStamp;
     }
-
+    
+    @Override
+    public long getSize() {
+        return 0;
+    }
+    
     @Override
     public boolean isHidden() {
         return isHidden;
     }
-
+    
     @Override
     public DirData getParent() {
         return parent;

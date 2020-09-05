@@ -7,14 +7,16 @@ import city.windmill.fileViewer.ISavable;
 
 public interface IFileData extends ISavable {
     Path getName();
-
+    
     Path getPath();
-
+    
     FileTime getTimeStamp();
-
+    
+    long getSize();
+    
     boolean isHidden();
-
+    
     DirData getParent();
-
+    
     FileType getType();
 }
