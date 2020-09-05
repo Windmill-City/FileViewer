@@ -41,10 +41,10 @@ public class FragmentStorageMgr extends Fragment {
         TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, pager2, (tab, position) -> {
             switch (position) {
                 case 0:
-                    tab.setText(R.string.Remote);
+                    tab.setText(R.string.remote);
                     break;
                 case 1:
-                    tab.setText(R.string.Local);
+                    tab.setText(R.string.local);
                     break;
             }
         });

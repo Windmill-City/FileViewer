@@ -1,89 +1,32 @@
 package city.windmill.fileViewer.file;
 
+import android.graphics.drawable.Icon;
 import android.os.Build;
-import android.util.JsonReader;
-import android.util.JsonWriter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
-import java.io.IOException;
+import com.blankj.utilcode.util.Utils;
+import com.windmill.FileViewer.R;
+
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.attribute.FileTime;
+
+import city.windmill.fileViewer.storage.IStorage;
 
 public class DirData extends FileData {
-    public final List<IFileData> fileData = new ArrayList<>();
-
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public DirData(DirData parent, Path name) {
-        super(parent, name);
-    }
-
-    public DirData(@NonNull DirData parent) {
-        super(parent);
+    public DirData(IStorage storage, DirData parent, Path name, FileTime timeStamp, long contentSize, boolean isHidden) {
+        super(storage, parent, name, timeStamp, contentSize, isHidden);
     }
     
-    public List<IFileData> getFiles() {
-        return fileData;
+    public DirData(IStorage storage, @NonNull DirData parent) {
+        super(storage, parent);
     }
     
-    //region IFileData
-    
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public long getSize() {
-        return fileData.size();
+    public Icon getIcon() {
+        return Icon.createWithResource(Utils.getApp().getApplicationContext(), R.drawable.ic_folder);
     }
-    
-    @Override
-    public FileType getType() {
-        return FileType.DIR;
-    }
-    
-    @Override
-    public void onSave(JsonWriter jsonWriter) throws IOException {
-        jsonWriter.value(name.toString());
-        jsonWriter.beginArray();
-        for (IFileData data : fileData) {
-            jsonWriter.value(data.getType() == FileType.DIR);
-            data.onSave(jsonWriter);
-        }
-        jsonWriter.endArray();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onLoad(JsonReader jsonReader) throws IOException {
-        fileData.clear();
-        name = Paths.get(jsonReader.nextString());
-        path = getParent() != null ? getParent().getPath().resolve(name) : name;
-        jsonReader.beginArray();
-        while (jsonReader.hasNext()) {
-            IFileData data;
-            if (jsonReader.nextBoolean())
-                data = new DirData(this);
-            else
-                data = new FileData(this);
-            data.onLoad(jsonReader);
-            fileData.add(data);
-        }
-        jsonReader.endArray();
-    }
-
-    //endregion
-    //region Object
-    @NonNull
-    @Override
-    public String toString() {
-        return "DirData{" +
-                "parent=" + parent +
-                ", fileData=" + fileData +
-                ", name=" + name +
-                ", path=" + path +
-                ", timeStamp=" + timeStamp +
-                ", isHidden=" + isHidden +
-                '}';
-    }
-//endregion
 }

@@ -24,16 +24,15 @@ import com.blankj.utilcode.util.SnackbarUtils;
 import com.blankj.utilcode.util.Utils;
 import com.windmill.FileViewer.R;
 
+import java.io.IOException;
 import java.util.List;
 
 import city.windmill.fileViewer.MainActivity;
-import city.windmill.fileViewer.viewer.FileViewer;
-import city.windmill.fileViewer.viewer.LocalFileViewer;
-import city.windmill.fileViewer.viewer.RemoteFileViewer;
+import city.windmill.fileViewer.viewer.DirViewer;
 
 public class FragmentStorage extends Fragment {
     private List<IStorage> storages;
-
+    
     public FragmentStorage(List<IStorage> storages) {
         this.storages = storages;
     }
@@ -64,29 +63,38 @@ public class FragmentStorage extends Fragment {
             holder.StorageName.setText(storage.getName());
             holder.view.setOnClickListener(v -> {
                 if (PermissionUtils.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    FileViewer viewer = storage instanceof LocalStorage ? new LocalFileViewer((LocalStorage) storage) : new RemoteFileViewer((RemoteStorage) storage);
-                    ((MainActivity) getActivity()).replaceFragment(viewer, true);
-                    viewer.viewFileData(storage.getRoot());
+                    DirViewer dirViewer = new DirViewer();
+                    try {
+                        dirViewer.viewData(storage.getRoot());
+                    } catch (IOException e) {
+                        LogUtils.e("Failed to open storage:", storage);
+                        LogUtils.e(e);
+                        SnackbarUtils.with(getView())
+                                .setMessage(getString(R.string.Fail_OpenStorage))
+                                .showError();
+                        return;
+                    }
+                    ((MainActivity) getActivity()).replaceFragment(dirViewer, true);
                 } else
                     RequestStoragePermission();
             });
         }
-
+    
         private void RequestStoragePermission() {
             PermissionUtils.permission(PermissionConstants.STORAGE).callback(new PermissionUtils.FullCallback() {
                 @Override
                 public void onGranted(List<String> permissionsGranted) {
                     LogUtils.i("Granted Storage Permission");
                     SnackbarUtils.with(getView())
-                            .setMessage(getString(R.string.Success_Storage))
+                            .setMessage(getString(R.string.Success_StoragePermission))
                             .showSuccess();
                 }
-
+    
                 @Override
                 public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
                     LogUtils.w("User denied Storage Permission Request");
                     SnackbarUtils.with(getView())
-                            .setMessage(getString(R.string.Failed_Storage))
+                            .setMessage(getString(R.string.Fail_StoragePermission))
                             .showWarning();
                 }
             }).request();

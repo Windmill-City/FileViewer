@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">File Viewer</string>
-    <string name="Remote">Remote</string>
-    <string name="Local">Local</string>
-    <string name="Success_Storage">Granted Storage Permission</string>
-    <string name="Failed_Storage">Without Storage Permission</string>
+    <string name="remote">Remote</string>
+    <string name="local">Local</string>
     <string name="no_storage_found">No Storage Found</string>
     <string name="empty_folder">Empty Folder</string>
+    <string name="Success_StoragePermission">Granted Storage Permission</string>
+    <string name="Fail_StoragePermission">Without Storage Permission</string>
+    <string name="Fail_ViewData">Failed to view data</string>
+    <string name="Fail_OpenStorage">Failed to open storage</string>
 </resources>
