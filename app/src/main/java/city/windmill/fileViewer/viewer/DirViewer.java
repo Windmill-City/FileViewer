@@ -70,13 +70,22 @@ public class DirViewer extends Fragment implements IViewer {
         private void setDirData(DirData dirData) throws IOException {
             if (dirData != null)
                 dataList = dirData.getStorage().getContents(dirData, entry -> showHidden || !Files.isHidden(entry), (o1, o2) -> {
-                    boolean iso1Dir = o1 instanceof DirData;
-                    int result = 0;
-                    if (iso1Dir == o2 instanceof DirData)
-                        result = o1.getName().compareTo(o2.getName());
-                    else if (iso1Dir)
-                        return -1;
-                    return result;
+                    if (o1 instanceof DirData != o2 instanceof DirData)
+                        return o1 instanceof DirData ? -1 : 0;//Dir first
+                    else {
+                        String name1 = o1.getName().toString();
+                        String name1_ = o1.getName().toString().toLowerCase();
+                        String name2 = o2.getName().toString();
+                        String name2_ = o2.getName().toString().toLowerCase();
+                        int size = Math.min(name1.length(), name2.length());
+                        for (int i = 0; i < size; i++) {
+                            if (name1_.charAt(i) != name2_.charAt(i))
+                                return Integer.compare(name1_.charAt(i), name2_.charAt(i));//ascii smaller at front
+                            else
+                                return Integer.compare(name1.charAt(i), name2.charAt(i));//lower case at back
+                        }
+                        return Integer.compare(name1.length(), name2.length());
+                    }
                 });
             else
                 dataList = new ArrayList<>();
