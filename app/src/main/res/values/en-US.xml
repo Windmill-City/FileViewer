@@ -7,6 +7,5 @@
     <string name="empty_folder">Empty Folder</string>
     <string name="Success_StoragePermission">Granted Storage Permission</string>
     <string name="Fail_StoragePermission">Without Storage Permission</string>
-    <string name="Fail_ViewData">Failed to view data</string>
-    <string name="Fail_OpenStorage">Failed to open storage</string>
+    <string name="Fail_ViewData">Failed to view data:%s</string>
 </resources>

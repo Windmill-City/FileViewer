@@ -5,9 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.PathUtils;
@@ -17,6 +14,7 @@ import java.io.IOException;
 
 import city.windmill.fileViewer.storage.FragmentStorageMgr;
 import city.windmill.fileViewer.storage.StorageMgr;
+import city.windmill.fileViewer.viewer.ViewerFactory;
 
 import static com.blankj.utilcode.util.LogUtils.D;
 import static com.blankj.utilcode.util.LogUtils.I;
@@ -29,11 +27,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         initLogConfig();
         loadStorageData();
-        
+    
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        replaceFragment(new FragmentStorageMgr(storageMgr));
+    
+        new ViewerFactory(getSupportFragmentManager());
+    
+        ViewerFactory.INSTANCE.replaceFragment(new FragmentStorageMgr(storageMgr), false);
     }
     
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -60,12 +60,5 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             LogUtils.e(e);
         }
-    }
-    
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.MainActivity, fragment);
-        transaction.commit();
     }
 }

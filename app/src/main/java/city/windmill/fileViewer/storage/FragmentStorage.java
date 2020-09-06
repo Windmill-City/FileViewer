@@ -28,10 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import city.windmill.fileViewer.viewer.DirViewer;
+import city.windmill.fileViewer.viewer.ViewerFactory;
 
 public class FragmentStorage extends Fragment {
     private List<? extends IStorage> storages;
+    private Fragment caller = this;
     
     public FragmentStorage(Set<? extends IStorage> storages) {
         this(new ArrayList<>(storages));
@@ -67,18 +68,7 @@ public class FragmentStorage extends Fragment {
             holder.StorageName.setText(storage.getName());
             holder.view.setOnClickListener(v -> {
                 if (PermissionUtils.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    DirViewer dirViewer = new DirViewer();
-                    try {
-                        dirViewer.viewData(storage.getRoot());
-                    } catch (Exception e) {
-                        LogUtils.e("Failed to open storage:", storage);
-                        LogUtils.e(e);
-                        SnackbarUtils.with(getView())
-                                .setMessage(String.format("%s:%s", getString(R.string.Fail_OpenStorage), e.getLocalizedMessage()))
-                                .showError();
-                        return;
-                    }
-                    //((MainActivity) getActivity()).replaceFragment(dirViewer, true);
+                    ViewerFactory.INSTANCE.viewFileData(storage.getRoot(), caller);
                 } else
                     RequestStoragePermission();
             });

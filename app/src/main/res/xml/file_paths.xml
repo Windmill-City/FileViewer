@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <root-path
+        name="root-path"
+        path="/" />
+    //代表设备的根目录new File("/");
+    <files-path
+        name="files-path"
+        path="/data/data/city.windmill.fileViewer/files" />
+    <cache-path
+        name="cache-path"
+        path="city.windmill.fileViewer/cache" />
+    <external-path
+        name="external-path"
+        path="/storage/emulate/0" />
+    <external-files-path
+        name="external-files-path"
+        path="/storage/emulate/0/Android/data/city.windmill.fileViewer/files" />
+    <external-cache-path
+        name="external-cache-path"
+        path="/storage/emulate/0/Android/data/city.windmill.fileViewer/cache" />
+</paths>

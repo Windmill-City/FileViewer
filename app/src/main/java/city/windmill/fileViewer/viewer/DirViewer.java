@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SnackbarUtils;
 import com.blankj.utilcode.util.Utils;
 import com.windmill.FileViewer.R;
 
@@ -32,6 +31,7 @@ import city.windmill.fileViewer.file.IFileData;
 public class DirViewer extends Fragment implements IViewer {
     private DirAdapter adapter = new DirAdapter();
     private boolean showHidden = false;
+    private Fragment viewer = this;
     
     @Nullable
     @Override
@@ -51,13 +51,11 @@ public class DirViewer extends Fragment implements IViewer {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void viewData(IFileData data) throws IOException {
-        LogUtils.i("View IFileData:", data);
+        LogUtils.d("View IFileData:", data);
         if (data instanceof DirData) {
             adapter.setDirData((DirData) data);
         } else
-            SnackbarUtils.with(getView())
-                    .setMessage("No Impl")
-                    .showWarning();
+            throw new IllegalArgumentException("Only support DirData, dataIn:" + data);
     }
     
     public class DirAdapter extends RecyclerView.Adapter<DirAdapter.DirViewHolder> {
@@ -112,14 +110,7 @@ public class DirViewer extends Fragment implements IViewer {
             else
                 holder.FileSize.setText(byteCount2Str(data.getContentSize()));
             holder.view.setOnClickListener(v -> {
-                try {
-                    viewData(data);
-                } catch (Exception e) {
-                    LogUtils.e("Failed to view data:", data);
-                    SnackbarUtils.with(getView())
-                            .setMessage(String.format("%s:%s", getString(R.string.Fail_ViewData), e.getLocalizedMessage()))
-                            .showError();
-                }
+                ViewerFactory.INSTANCE.viewFileData(data, viewer);
             });
         }
         
