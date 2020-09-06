@@ -120,7 +120,7 @@ public class LocalStorage implements IStorage {
     
     @Override
     public byte[] getFile(FileData data) throws IOException {
-        return null;
+        return Files.readAllBytes(data.getPath());
     }
     
     //endregion
