@@ -1,8 +1,6 @@
 package city.windmill.fileViewer.storage;
 
 import android.os.Build;
-import android.util.JsonReader;
-import android.util.JsonWriter;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -20,6 +18,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import city.windmill.fileViewer.file.DirData;
 import city.windmill.fileViewer.file.FileData;
@@ -95,8 +94,11 @@ public class LocalStorage implements IStorage {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                 if (dir == dirData.getPath()) return FileVisitResult.CONTINUE;
-                if (filter.accept(dir))
-                    fileData.add(new DirData(storage, dirData, dir.getFileName(), Files.getLastModifiedTime(dir), Files.list(dir).count(), Files.isHidden(dir)));
+                if (filter.accept(dir)) {
+                    Stream<Path> paths = Files.list(dir);
+                    fileData.add(new DirData(storage, dirData, dir.getFileName(), Files.getLastModifiedTime(dir), paths.count(), Files.isHidden(dir)));
+                    paths.close();
+                }
                 return FileVisitResult.SKIP_SUBTREE;
             }
             
@@ -119,16 +121,6 @@ public class LocalStorage implements IStorage {
     @Override
     public byte[] getFile(FileData data) throws IOException {
         return null;
-    }
-    
-    @Override
-    public void onSave(JsonWriter jsonWriter) throws IOException {
-        //LocalStorage nothing to save
-    }
-    
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onLoad(JsonReader jsonReader) throws IOException {
     }
     
     //endregion
