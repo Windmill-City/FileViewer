@@ -114,10 +114,10 @@ public class DirViewer extends Fragment implements IViewer {
             holder.view.setOnClickListener(v -> {
                 try {
                     viewData(data);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     LogUtils.e("Failed to view data:", data);
                     SnackbarUtils.with(getView())
-                            .setMessage(getString(R.string.Fail_ViewData))
+                            .setMessage(String.format("%s:%s", getString(R.string.Fail_ViewData), e.getLocalizedMessage()))
                             .showError();
                 }
             });

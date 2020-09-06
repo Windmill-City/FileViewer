@@ -24,7 +24,6 @@ import com.blankj.utilcode.util.SnackbarUtils;
 import com.blankj.utilcode.util.Utils;
 import com.windmill.FileViewer.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -71,11 +70,11 @@ public class FragmentStorage extends Fragment {
                     DirViewer dirViewer = new DirViewer();
                     try {
                         dirViewer.viewData(storage.getRoot());
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         LogUtils.e("Failed to open storage:", storage);
                         LogUtils.e(e);
                         SnackbarUtils.with(getView())
-                                .setMessage(getString(R.string.Fail_OpenStorage))
+                                .setMessage(String.format("%s:%s", getString(R.string.Fail_OpenStorage), e.getLocalizedMessage()))
                                 .showError();
                         return;
                     }
