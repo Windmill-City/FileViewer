@@ -23,41 +23,19 @@ import static com.blankj.utilcode.util.LogUtils.I;
 
 public class MainActivity extends AppCompatActivity {
     public StorageMgr storageMgr;
+    
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         initLogConfig();
         loadStorageData();
-    
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    
+        
         replaceFragment(new FragmentStorageMgr(storageMgr));
     }
     
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void loadStorageData() {
-        try {
-            storageMgr = new StorageMgr(PathUtils.getInternalAppDataPath());
-            storageMgr.LoadStorage();
-        } catch (IOException e) {
-            LogUtils.e(e);
-        }
-    }
-    
-    public void replaceFragment(Fragment fragment) {
-        replaceFragment(fragment, false);
-    }
-    
-    public void replaceFragment(Fragment fragment, boolean backStack) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (backStack)
-            transaction.addToBackStack(null);
-        transaction.replace(R.id.MainActivity, fragment);
-        transaction.commit();
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initLogConfig() {
         LogUtils.Config cfg = LogUtils.getConfig();
@@ -70,7 +48,24 @@ public class MainActivity extends AppCompatActivity {
         cfg.setFileExtension(".log");
         cfg.setFilePrefix("FileViewer-Log");
         cfg.setSaveDays(7);
-
+    
         LogUtils.i(cfg);
+    }
+    
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void loadStorageData() {
+        try {
+            storageMgr = new StorageMgr(PathUtils.getInternalAppDataPath());
+            storageMgr.LoadStorage();
+        } catch (IOException e) {
+            LogUtils.e(e);
+        }
+    }
+    
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.MainActivity, fragment);
+        transaction.commit();
     }
 }

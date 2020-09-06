@@ -9,9 +9,11 @@ import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
 
+import city.windmill.fileViewer.ISavable;
+import city.windmill.fileViewer.file.DirData;
 import city.windmill.fileViewer.utils.MacAddress;
 
-public class RemoteStorage extends LocalStorage {
+public class RemoteStorage extends LocalStorage implements ISavable {
     protected MacAddress mac;
     
     public void Connect() {
@@ -20,15 +22,18 @@ public class RemoteStorage extends LocalStorage {
     //region IStorage
     @Override
     public void onSave(JsonWriter jsonWriter) throws IOException {
-        super.onSave(jsonWriter);
+        jsonWriter.value(getName());
         jsonWriter.value(mac.toString());
+        getRoot().onSave(jsonWriter);
     }
     
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onLoad(JsonReader jsonReader) throws IOException {
-        super.onLoad(jsonReader);
+        name = jsonReader.nextString();
         mac = new MacAddress(jsonReader.nextString());
+        root = new DirData(this, null);
+        root.onLoad(jsonReader);
     }
     
     @Override

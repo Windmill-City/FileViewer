@@ -25,15 +25,20 @@ import com.blankj.utilcode.util.Utils;
 import com.windmill.FileViewer.R;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import city.windmill.fileViewer.MainActivity;
 import city.windmill.fileViewer.viewer.DirViewer;
 
 public class FragmentStorage extends Fragment {
-    private List<IStorage> storages;
+    private List<? extends IStorage> storages;
     
-    public FragmentStorage(List<IStorage> storages) {
+    public FragmentStorage(Set<? extends IStorage> storages) {
+        this(new ArrayList<>(storages));
+    }
+    
+    public FragmentStorage(List<? extends IStorage> storages) {
         this.storages = storages;
     }
     
@@ -74,7 +79,7 @@ public class FragmentStorage extends Fragment {
                                 .showError();
                         return;
                     }
-                    ((MainActivity) getActivity()).replaceFragment(dirViewer, true);
+                    //((MainActivity) getActivity()).replaceFragment(dirViewer, true);
                 } else
                     RequestStoragePermission();
             });

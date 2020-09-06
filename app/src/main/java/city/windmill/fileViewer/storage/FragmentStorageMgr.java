@@ -18,9 +18,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.windmill.FileViewer.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class FragmentStorageMgr extends Fragment {
     private StorageMgr storageMgr;
     
@@ -55,18 +52,10 @@ public class FragmentStorageMgr extends Fragment {
     private static class StoragePageAdapter extends FragmentStateAdapter {
         private FragmentStorage[] fStorages;
         
-        public StoragePageAdapter(@NonNull FragmentActivity fragmentActivity, StorageMgr storageMgr) {
+        private StoragePageAdapter(@NonNull FragmentActivity fragmentActivity, StorageMgr storageMgr) {
             super(fragmentActivity);
-            List<IStorage> remote_storages = new ArrayList<>();
-            List<IStorage> local_storages = new ArrayList<>();
-            for (IStorage storage : storageMgr.storages) {
-                if (storage instanceof RemoteStorage)
-                    remote_storages.add(storage);
-                else
-                    local_storages.add(storage);
-            }
-            fStorages = new FragmentStorage[]{new FragmentStorage(remote_storages),
-                                              new FragmentStorage(local_storages)};
+            fStorages = new FragmentStorage[]{new FragmentStorage(storageMgr.remoteStorages),
+                                              new FragmentStorage(storageMgr.localStorages)};
         }
         
         @NonNull

@@ -9,12 +9,11 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 
-import city.windmill.fileViewer.ISavable;
 import city.windmill.fileViewer.file.DirData;
 import city.windmill.fileViewer.file.FileData;
 import city.windmill.fileViewer.file.IFileData;
 
-public interface IStorage extends ISavable {
+public interface IStorage {
     String getName();
     
     DirData getRoot();

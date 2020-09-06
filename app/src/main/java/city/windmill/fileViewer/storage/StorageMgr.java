@@ -33,7 +33,8 @@ public class StorageMgr {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static final PathMatcher MATCHER_STORAGE_FILE = FileSystems.getDefault().getPathMatcher("glob:**" + STORAGE_FILE_SUFFIX);
     
-    public final Set<IStorage> storages = new HashSet<>();
+    public final Set<RemoteStorage> remoteStorages = new HashSet<>();
+    public final Set<LocalStorage> localStorages = new HashSet<>();
     public final Path savePath;
     
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -46,10 +47,21 @@ public class StorageMgr {
     }
     
     //region Save/Load
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void LoadStorage() throws IOException {
         LogUtils.i("Begin loading storage data from:", savePath);
-        storages.clear();
+        loadLocalStorage();
+        loadRemoteStorage();
+        LogUtils.i("Finally loaded storage:", localStorages, remoteStorages);
+    }
+    
+    public void loadLocalStorage() throws IOException {
+        localStorages.clear();
+        localStorages.addAll(LocalStorageDiscover.getLocalStorages());
+    }
+    
+    public void loadRemoteStorage() throws IOException {
+        remoteStorages.clear();
+        
         final List<Path> pathStorages = new ArrayList<>();
         Files.walkFileTree(savePath, new SimpleFileVisitor<Path>() {
             @Override
@@ -58,7 +70,7 @@ public class StorageMgr {
                 if (dir.equals(savePath)) return FileVisitResult.CONTINUE;
                 return FileVisitResult.SKIP_SUBTREE;
             }
-    
+            
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 LogUtils.v("Visited file:", file);
@@ -68,7 +80,7 @@ public class StorageMgr {
                 }
                 return FileVisitResult.CONTINUE;
             }
-    
+            
             @Override
             public FileVisitResult visitFileFailed(Path file, IOException exc) {
                 LogUtils.w("Failed to visit file:", file);
@@ -76,7 +88,7 @@ public class StorageMgr {
             }
         });
         LogUtils.i("Founded Storage Files:", pathStorages);
-    
+        
         for (Path pathStorage : pathStorages) {
             LogUtils.d("Begin Load File:", pathStorage);
             BufferedReader reader = Files.newBufferedReader(pathStorage, StandardCharsets.UTF_8);
@@ -90,31 +102,23 @@ public class StorageMgr {
         }
         //Save data
         SaveStorage();
-        storages.addAll(LocalStorageDiscover.getLocalStorages());
-        LogUtils.i("Finally loaded storage:", storages);
     }
     
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void doLoadStorageData(BufferedReader bufreader) throws IOException {
         JsonReader reader = new JsonReader(bufreader);
         reader.beginArray();
-        IStorage storage;
-        if (reader.nextBoolean())
-            storage = new LocalStorage();
-        else
-            storage = new RemoteStorage();
+        RemoteStorage storage = new RemoteStorage();
         storage.onLoad(reader);
         reader.endArray();
         reader.close();
-        storages.add(storage);
+        remoteStorages.add(storage);
         LogUtils.d("Do loaded storage:", storage);
     }
     
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void SaveStorage() throws IOException {
-        for (IStorage storage : storages) {
-            if (storage instanceof LocalStorage) continue;
-            
+        for (RemoteStorage storage : remoteStorages) {
             Path destPath = savePath.resolve(storage.getName().toLowerCase() + STORAGE_FILE_SUFFIX);
             BufferedWriter writer = Files.newBufferedWriter(destPath, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             doSaveStorageData(storage, writer);
@@ -122,23 +126,22 @@ public class StorageMgr {
         }
     }
     
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void delete(IStorage storage) throws IOException {
-        Path toDel = savePath.resolve(storage.getName().toLowerCase() + STORAGE_FILE_SUFFIX);
-        Files.delete(toDel);
-        LogUtils.i("Deleted storage:", toDel);
-    }
-    //endregion
-    
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void doSaveStorageData(IStorage storage, BufferedWriter bufWriter) throws IOException {
+    private void doSaveStorageData(RemoteStorage storage, BufferedWriter bufWriter) throws IOException {
         JsonWriter writer = new JsonWriter(bufWriter);
         writer.beginArray();
-        writer.value(storage instanceof LocalStorage);
         storage.onSave(writer);
         writer.endArray();
         writer.flush();
         writer.close();
         LogUtils.d("Do saved storage:", storage);
     }
+    
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void delete(RemoteStorage storage) throws IOException {
+        Path toDel = savePath.resolve(storage.getName().toLowerCase() + STORAGE_FILE_SUFFIX);
+        Files.delete(toDel);
+        LogUtils.i("Deleted storage:", toDel);
+    }
+    //endregion
 }
