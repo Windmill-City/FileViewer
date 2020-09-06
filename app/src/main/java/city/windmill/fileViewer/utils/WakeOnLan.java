@@ -18,7 +18,7 @@ public class WakeOnLan {
     }
 
     private static DatagramPacket CreatePacket(MacAddress address) {
-        byte[] mac = address.getMac();
+        byte[] mac = address.get();
 
         byte[] bytes = new byte[6 + 16 * mac.length];
         //FF x 6
