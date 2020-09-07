@@ -40,6 +40,10 @@ public class DirViewer extends Fragment implements IViewer {
         RecyclerView files = view.findViewById(R.id.View_Files);
         files.setLayoutManager(new LinearLayoutManager(Utils.getApp().getApplicationContext()));
         files.setAdapter(adapter);
+        if (adapter.dataList.size() == 0)
+            view.findViewById(R.id.EmptyFolder).setVisibility(View.VISIBLE);
+        else
+            view.findViewById(R.id.EmptyFolder).setVisibility(View.INVISIBLE);
         return view;
     }
     
@@ -82,7 +86,7 @@ public class DirViewer extends Fragment implements IViewer {
                             else
                                 return Integer.compare(name1.charAt(i), name2.charAt(i));//lower case at back
                         }
-                        return Integer.compare(name1.length(), name2.length());
+                        return Integer.compare(name1.length(), name2.length());//short name at front
                     }
                 });
             else
@@ -101,43 +105,11 @@ public class DirViewer extends Fragment implements IViewer {
         @SuppressLint("DefaultLocale")
         @Override
         public void onBindViewHolder(@NonNull DirViewHolder holder, int position) {
-            IFileData data = dataList.get(position);
-            holder.FileName.setText(data.getName().toString());
-            holder.FileIcon.setImageIcon(data.getIcon());
-            holder.FileTimeStamp.setText(data.getTimeStamp().toString());
-            if (data instanceof DirData)
-                holder.FileSize.setText(String.format("%d Item", data.getContentSize()));
-            else
-                holder.FileSize.setText(byteCount2Str(data.getContentSize()));
-            holder.view.setOnClickListener(v -> {
-                ViewerFactory.INSTANCE.viewFileData(data, viewer);
-            });
-        }
-        
-        @SuppressLint("DefaultLocale")
-        private String byteCount2Str(long size) {
-            long kb = 1024;
-            long mb = kb * 1024;
-            long gb = mb * 1024;
-            if (size >= gb) {
-                return String.format("%.1f GB", (float) size / gb);
-            } else if (size >= mb) {
-                float f = (float) size / mb;
-                return String.format(f > 100 ? "%.0f MB" : "%.1f MB", f);
-            } else if (size > kb) {
-                float f = (float) size / kb;
-                return String.format(f > 100 ? "%.0f KB" : "%.1f KB", f);
-            } else {
-                return String.format("%d B", size);
-            }
+            dataList.get(position).onBindViewHolder(viewer, this, holder, position);
         }
         
         @Override
         public int getItemCount() {
-            if (dataList.size() == 0)
-                getView().findViewById(R.id.EmptyFolder).setVisibility(View.VISIBLE);
-            else
-                getView().findViewById(R.id.EmptyFolder).setVisibility(View.INVISIBLE);
             return dataList.size();
         }
         

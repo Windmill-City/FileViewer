@@ -49,6 +49,10 @@ public class FragmentStorage extends Fragment {
         RecyclerView viewStorageItems = view.findViewById(R.id.View_StorageItems);
         viewStorageItems.setLayoutManager(new LinearLayoutManager(Utils.getApp().getApplicationContext()));
         viewStorageItems.setAdapter(new StorageItemAdapter());
+        if (storages.isEmpty())
+            view.findViewById(R.id.EmptyStorage).setVisibility(View.VISIBLE);
+        else
+            view.findViewById(R.id.EmptyStorage).setVisibility(View.INVISIBLE);
         return view;
     }
     
@@ -96,10 +100,6 @@ public class FragmentStorage extends Fragment {
         
         @Override
         public int getItemCount() {
-            if (storages.isEmpty())
-                getView().findViewById(R.id.EmptyStorage).setVisibility(View.VISIBLE);
-            else
-                getView().findViewById(R.id.EmptyStorage).setVisibility(View.INVISIBLE);
             return storages.size();
         }
         

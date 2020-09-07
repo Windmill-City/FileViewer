@@ -33,8 +33,8 @@ public class LocalStorage implements IStorage {
     }
     
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public LocalStorage(String name, String root) throws IOException {
-        this(name, Paths.get(root), Files.getLastModifiedTime(Paths.get(root)));
+    public LocalStorage(String name, String root) {
+        this(name, Paths.get(root), FileTime.fromMillis(0));
     }
     
     @RequiresApi(api = Build.VERSION_CODES.O)

@@ -54,7 +54,7 @@ public class StorageMgr {
         LogUtils.i("Finally loaded storage:", localStorages, remoteStorages);
     }
     
-    public void loadLocalStorage() throws IOException {
+    public void loadLocalStorage() {
         localStorages.clear();
         localStorages.addAll(LocalStorageDiscover.getLocalStorages());
     }
