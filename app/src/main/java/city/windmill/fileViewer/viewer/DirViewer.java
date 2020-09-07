@@ -115,6 +115,12 @@ public class DirViewer extends Fragment implements IViewer {
                 return;
             }
             final EditText et = new EditText(getActivity());
+            IFileData data = selected.iterator().next();
+            String oldFileName = data.getName().toString();
+            et.setText(oldFileName);
+            int index = oldFileName.lastIndexOf('.');
+            index = index < 0 ? oldFileName.length() : index;
+            et.setSelection(0, index);
             new AlertDialog.Builder(getActivity())
                     .setTitle(R.string.NewName)
                     .setView(et)
@@ -217,7 +223,7 @@ public class DirViewer extends Fragment implements IViewer {
             IFileData data = dataList.get(position);
             holder.view.setSelected(selected.contains(data));
             holder.FileName.setText(data.getName().toString());
-            holder.FileIcon.setImageIcon(data.getIcon(true));
+            holder.FileIcon.setImageIcon(data.getIcon(false));
             holder.FileTimeStamp.setText(data.getTimeStamp().toString());
             if (data instanceof DirData)
                 holder.FileSize.setText(String.format("%d Item", data.getContentSize()));
