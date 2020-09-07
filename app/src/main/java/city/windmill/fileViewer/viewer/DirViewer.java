@@ -42,8 +42,6 @@ public class DirViewer extends Fragment implements IViewer {
         files.setAdapter(adapter);
         if (adapter.dataList.size() == 0)
             view.findViewById(R.id.EmptyFolder).setVisibility(View.VISIBLE);
-        else
-            view.findViewById(R.id.EmptyFolder).setVisibility(View.INVISIBLE);
         TextView view_path = view.findViewById(R.id.View_Path);
         view_path.setText(adapter.curDirData != null ? adapter.curDirData.getPath().toString() : getString(R.string.empty_folder));
         return view;
