@@ -77,12 +77,11 @@ public class LocalStorage implements IStorage {
     
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void moveContent(IFileData data, String newName, CopyOption copyOption, boolean keepSource) throws IOException {
-        Path dest = data.getParent().getPath().resolve(data.getName());
+    public void moveContent(IFileData data, Path newPath, boolean keepSource, CopyOption... options) throws IOException {
         if (keepSource)
-            Files.copy(data.getPath(), dest, copyOption);
+            Files.copy(data.getPath(), newPath, options);
         else
-            Files.move(data.getPath(), dest, copyOption);
+            Files.move(data.getPath(), newPath, options);
     }
     
     @RequiresApi(api = Build.VERSION_CODES.O)

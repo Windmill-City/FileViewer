@@ -1,6 +1,5 @@
 package city.windmill.fileViewer.file;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
@@ -11,8 +10,6 @@ import android.util.Size;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.Utils;
@@ -24,8 +21,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 
 import city.windmill.fileViewer.storage.IStorage;
-import city.windmill.fileViewer.viewer.DirViewer;
-import city.windmill.fileViewer.viewer.ViewerFactory;
 
 public class FileData implements IFileData {
     public final IStorage storage;
@@ -90,53 +85,15 @@ public class FileData implements IFileData {
                 '}';
     }
     
-    @SuppressLint("DefaultLocale")
-    private String byteCount2Str(long size) {
-        long kb = 1024;
-        long mb = kb * 1024;
-        long gb = mb * 1024;
-        if (size >= gb) {
-            return String.format("%.1f GB", (float) size / gb);
-        } else if (size >= mb) {
-            float f = (float) size / mb;
-            return String.format(f > 100 ? "%.0f MB" : "%.1f MB", f);
-        } else if (size > kb) {
-            float f = (float) size / kb;
-            return String.format(f > 100 ? "%.0f KB" : "%.1f KB", f);
-        } else {
-            return String.format("%d B", size);
-        }
-    }
-    
-    
-    @Override
-    public boolean isHidden() {
-        return isHidden;
-    }
-    
-    
-    @Override
-    public DirData getParent() {
-        return parent;
-    }
-    
-    @Override
-    public IStorage getStorage() {
-        return storage;
-    }
-    
-    
     @Override
     public Path getName() {
         return name;
     }
     
-    
     @Override
     public Path getPath() {
         return path;
     }
-    
     
     @Override
     public Icon getIcon(boolean thumbnail) {
@@ -164,16 +121,17 @@ public class FileData implements IFileData {
     }
     
     @Override
-    public void onBindViewHolder(Fragment container, RecyclerView.Adapter<? extends RecyclerView.ViewHolder> adapter, RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof DirViewer.DirAdapter.DirViewHolder) {
-            DirViewer.DirAdapter.DirViewHolder dirViewHolder = (DirViewer.DirAdapter.DirViewHolder) holder;
-            dirViewHolder.FileName.setText(getName().toString());
-            dirViewHolder.FileIcon.setImageIcon(getIcon(true));
-            dirViewHolder.FileTimeStamp.setText(getTimeStamp().toString());
-            dirViewHolder.FileSize.setText(byteCount2Str(getContentSize()));
-            dirViewHolder.view.setOnClickListener(v -> {
-                ViewerFactory.INSTANCE.viewFileData(this, container);
-            });
-        }
+    public boolean isHidden() {
+        return isHidden;
+    }
+    
+    @Override
+    public DirData getParent() {
+        return parent;
+    }
+    
+    @Override
+    public IStorage getStorage() {
+        return storage;
     }
 }

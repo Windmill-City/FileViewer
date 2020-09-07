@@ -2,9 +2,6 @@ package city.windmill.fileViewer.file;
 
 import android.graphics.drawable.Icon;
 
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 
@@ -23,8 +20,6 @@ public interface IFileData extends ISavable {
     long getContentSize();
     
     boolean isHidden();
-    
-    void onBindViewHolder(Fragment container, RecyclerView.Adapter<? extends RecyclerView.ViewHolder> adapter, RecyclerView.ViewHolder holder, int position);
     
     DirData getParent();
     

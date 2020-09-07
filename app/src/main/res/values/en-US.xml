@@ -8,4 +8,19 @@
     <string name="Success_StoragePermission">Granted Storage Permission</string>
     <string name="Fail_StoragePermission">Without Storage Permission</string>
     <string name="Fail_ViewData">Failed to view data:%s</string>
+    <string name="copy">Copy</string>
+    <string name="cut">Cut</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="Msg_DelCount">Will delete %d file</string>
+    <string name="Ensure_Del">Ensure Delete</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Ok">Ok</string>
+    <string name="NewName">Type new name</string>
+    <string name="OneFileOnly">One file at a time</string>
+    <string name="AtLeastOne">At least one file</string>
+    <string name="Fail_Rename">Failed to Rename: %s to %s</string>
+    <string name="EmptyName">Name could not be empty</string>
 </resources>

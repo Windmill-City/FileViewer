@@ -25,7 +25,7 @@ public interface IStorage {
     
     void deleteContent(IFileData data) throws IOException;
     
-    void moveContent(IFileData data, String newName, CopyOption copyOption, boolean keepSource) throws IOException;
+    void moveContent(IFileData data, Path newPath, boolean keepSource, CopyOption... options) throws IOException;
     
     List<IFileData> getContents(DirData data, DirectoryStream.Filter<Path> filter, Comparator<IFileData> sorter) throws IOException;
     
