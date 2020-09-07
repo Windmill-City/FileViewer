@@ -126,7 +126,6 @@ public class DirViewer extends Fragment implements IViewer {
                     .setView(et)
                     .setPositiveButton(R.string.Ok, (dialog, which) -> {
                         if (et.getText().length() > 0) {
-                            IFileData data = selected.iterator().next();
                             Path dest = data.getParent().getPath().resolve(et.getText().toString());
                             try {
                                 data.getStorage().moveContent(data, dest, false);
