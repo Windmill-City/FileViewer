@@ -44,6 +44,8 @@ public class DirViewer extends Fragment implements IViewer {
             view.findViewById(R.id.EmptyFolder).setVisibility(View.VISIBLE);
         else
             view.findViewById(R.id.EmptyFolder).setVisibility(View.INVISIBLE);
+        TextView view_path = view.findViewById(R.id.View_Path);
+        view_path.setText(adapter.curDirData != null ? adapter.curDirData.getPath().toString() : getString(R.string.empty_folder));
         return view;
     }
     
@@ -63,6 +65,7 @@ public class DirViewer extends Fragment implements IViewer {
     }
     
     public class DirAdapter extends RecyclerView.Adapter<DirAdapter.DirViewHolder> {
+        private DirData curDirData;
         private List<IFileData> dataList = new ArrayList<>();
         
         private DirAdapter() {
@@ -70,7 +73,8 @@ public class DirViewer extends Fragment implements IViewer {
         
         @RequiresApi(api = Build.VERSION_CODES.O)
         private void setDirData(DirData dirData) throws IOException {
-            if (dirData != null)
+            curDirData = dirData;
+            if (dirData != null) {
                 dataList = dirData.getStorage().getContents(dirData, entry -> showHidden || !Files.isHidden(entry), (o1, o2) -> {
                     if (o1 instanceof DirData != o2 instanceof DirData)
                         return o1 instanceof DirData ? -1 : 0;//Dir first
@@ -89,8 +93,9 @@ public class DirViewer extends Fragment implements IViewer {
                         return Integer.compare(name1.length(), name2.length());//short name at front
                     }
                 });
-            else
+            } else {
                 dataList = new ArrayList<>();
+            }
             notifyDataSetChanged();
         }
         
