@@ -56,12 +56,8 @@ public class FileData implements IFileData {
     @Override
     public void onSave(JsonWriter jsonWriter) throws IOException {
         jsonWriter.value(name.toString());
-    }    //region IFileData
-    
-    @Override
-    public Path getName() {
-        return name;
     }
+    
     
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -71,9 +67,76 @@ public class FileData implements IFileData {
     }
     
     @Override
+    public int hashCode() {
+        return getPath().hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileData fileData = (FileData) o;
+        return getPath().equals(fileData.getPath());
+    }
+    
+    @Override
+    public String toString() {
+        return "FileData{" +
+                "parent=" + parent +
+                ", name=" + name +
+                ", path=" + path +
+                ", timeStamp=" + timeStamp +
+                ", isHidden=" + isHidden +
+                '}';
+    }
+    
+    @SuppressLint("DefaultLocale")
+    private String byteCount2Str(long size) {
+        long kb = 1024;
+        long mb = kb * 1024;
+        long gb = mb * 1024;
+        if (size >= gb) {
+            return String.format("%.1f GB", (float) size / gb);
+        } else if (size >= mb) {
+            float f = (float) size / mb;
+            return String.format(f > 100 ? "%.0f MB" : "%.1f MB", f);
+        } else if (size > kb) {
+            float f = (float) size / kb;
+            return String.format(f > 100 ? "%.0f KB" : "%.1f KB", f);
+        } else {
+            return String.format("%d B", size);
+        }
+    }
+    
+    
+    @Override
+    public boolean isHidden() {
+        return isHidden;
+    }
+    
+    
+    @Override
+    public DirData getParent() {
+        return parent;
+    }
+    
+    @Override
+    public IStorage getStorage() {
+        return storage;
+    }
+    
+    
+    @Override
+    public Path getName() {
+        return name;
+    }
+    
+    
+    @Override
     public Path getPath() {
         return path;
     }
+    
     
     @Override
     public Icon getIcon(boolean thumbnail) {
@@ -113,68 +176,4 @@ public class FileData implements IFileData {
             });
         }
     }
-    
-    @SuppressLint("DefaultLocale")
-    private String byteCount2Str(long size) {
-        long kb = 1024;
-        long mb = kb * 1024;
-        long gb = mb * 1024;
-        if (size >= gb) {
-            return String.format("%.1f GB", (float) size / gb);
-        } else if (size >= mb) {
-            float f = (float) size / mb;
-            return String.format(f > 100 ? "%.0f MB" : "%.1f MB", f);
-        } else if (size > kb) {
-            float f = (float) size / kb;
-            return String.format(f > 100 ? "%.0f KB" : "%.1f KB", f);
-        } else {
-            return String.format("%d B", size);
-        }
-    }
-    
-    //region Object
-    @Override
-    public int hashCode() {
-        return getPath().hashCode();
-    }
-    
-    @Override
-    public boolean isHidden() {
-        return isHidden;
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FileData fileData = (FileData) o;
-        return getPath().equals(fileData.getPath());
-    }
-    
-    @Override
-    public String toString() {
-        return "FileData{" +
-                "parent=" + parent +
-                ", name=" + name +
-                ", path=" + path +
-                ", timeStamp=" + timeStamp +
-                ", isHidden=" + isHidden +
-                '}';
-    }
-    
-    @Override
-    public DirData getParent() {
-        return parent;
-    }
-    
-    @Override
-    public IStorage getStorage() {
-        return storage;
-    }
-    
-    
-    //endregion
-    
-    
-    //endregion
 }
