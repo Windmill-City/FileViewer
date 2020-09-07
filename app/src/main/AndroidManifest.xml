@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="city.windmill.fileViewer.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
