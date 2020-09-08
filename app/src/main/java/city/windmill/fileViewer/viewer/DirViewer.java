@@ -28,12 +28,13 @@ import com.windmill.FileViewer.R;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import city.windmill.fileViewer.file.DirData;
+import city.windmill.fileViewer.file.FileData;
 import city.windmill.fileViewer.file.IFileData;
 
 public class DirViewer extends Fragment implements IViewer {
@@ -116,6 +117,7 @@ public class DirViewer extends Fragment implements IViewer {
             }
             final EditText et = new EditText(getActivity());
             IFileData data = selected.iterator().next();
+            selected.clear();//Changed content, hashcode changed, remove first
             String oldFileName = data.getName().toString();
             et.setText(oldFileName);
             int index = oldFileName.lastIndexOf('.');
@@ -126,9 +128,10 @@ public class DirViewer extends Fragment implements IViewer {
                     .setView(et)
                     .setPositiveButton(R.string.Ok, (dialog, which) -> {
                         if (et.getText().length() > 0) {
-                            Path dest = data.getParent().getPath().resolve(et.getText().toString());
+                            ((FileData) data).name = Paths.get(et.getText().toString());
                             try {
-                                data.getStorage().moveContent(data, dest, false);
+                                data.getStorage().moveContent(data, data.getParent(), false);
+                                selected.add(data);//Changed content, hashcode changed, add back
                                 adapter.notifyItemChanged(adapter.dataList.indexOf(data));
                             } catch (IOException e) {
                                 LogUtils.e("Failed to Rename:", data, et.getText().toString());
